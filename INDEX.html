@@ -120,7 +120,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="text-xl font-extrabold tracking-wide text-white uppercase">Garaż<span class="text-amber-500">Pro</span></h1>
-              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.3</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.0</span>
             </div>
             <p class="text-xs text-slate-400">Dziennik Serwisowy & Budżet</p>
           </div>
@@ -159,6 +159,12 @@
         <button onclick="toggleModal('addVehicleModal', true)" class="hidden md:flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-cyan-500/20">
           <i class="fa-solid fa-plus text-xs"></i>
           <span>Auto</span>
+        </button>
+
+        <!-- Google Sync Config Button -->
+        <button onclick="toggleModal('googleSyncModal', true)" title="Konfiguracja Zapisywania Dysk Google" class="p-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-emerald-400 rounded-xl border border-slate-700 transition relative">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span id="syncIndicator" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-slate-900 animate-pulse"></span>
         </button>
       </div>
 
@@ -313,16 +319,16 @@
         <!-- LEFT COLUMN: ADD ENTRY FORM & ANALYTICS (4 cols) -->
         <div class="lg:col-span-4 space-y-6">
           
-          <!-- Form Card Zwijany -->
+          <!-- Form Card -->
           <div class="glass-panel p-5 rounded-2xl border relative">
-            <div onclick="toggleCollapsible('serviceForm', 'serviceFormIcon')" class="flex items-center justify-between cursor-pointer select-none pb-3 border-b border-slate-800">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
               <h3 class="font-bold text-white text-base flex items-center gap-2">
-                <i id="serviceFormIcon" class="fa-solid fa-circle-minus text-cyan-400 transition-transform"></i> Dodaj Wymianę / Naprawę
+                <i class="fa-solid fa-circle-plus text-cyan-400"></i> Dodaj Wymianę / Naprawę
               </h3>
               <span class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Nowy wpis</span>
             </div>
 
-            <form id="serviceForm" onsubmit="handleFormSubmit(event)" class="space-y-4 pt-4 transition-all duration-300">
+            <form id="serviceForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Nazwa części / Wykonanej naprawy *</label>
                 <input type="text" id="partName" required placeholder="np. Wymiana oleju 5W30 + filtr" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
@@ -506,17 +512,17 @@
       <!-- WORKSPACE: FORMULARZ BUDŻETU & TABELA ROZLICZEŃ -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- LEWA KOLUMNA: FORMULARZ BUDŻETU ZWIJANY -->
+        <!-- LEWA KOLUMNA: FORMULARZ BUDŻETU -->
         <div class="lg:col-span-4 space-y-6">
           <div class="glass-panel p-5 rounded-2xl border relative">
-            <div onclick="toggleCollapsible('budgetForm', 'budgetFormIcon')" class="flex items-center justify-between cursor-pointer select-none pb-3 border-b border-slate-800">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
               <h3 class="font-bold text-white text-base flex items-center gap-2">
-                <i id="budgetFormIcon" class="fa-solid fa-circle-minus text-emerald-400 transition-transform"></i> Dodaj Pozycję Budżetową
+                <i class="fa-solid fa-circle-plus text-emerald-400"></i> Dodaj Pozycję Budżetową
               </h3>
               <span class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Finanse</span>
             </div>
 
-            <form id="budgetForm" onsubmit="handleBudgetSubmit(event)" class="space-y-4 pt-4 transition-all duration-300">
+            <form id="budgetForm" onsubmit="handleBudgetSubmit(event)" class="space-y-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Typ Pozycji *</label>
                 <select id="budgetType" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
@@ -543,18 +549,12 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-300 mb-1">Osoba / Właściciel</label>
-                  <input type="text" id="budgetPerson" placeholder="np. Marcel lub Martyna" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-300 mb-1">Status Płatności</label>
-                  <select id="budgetPaidStatus" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
-                    <option value="UNPAID">⏳ Do zapłaty</option>
-                    <option value="PAID">✅ Opłacone</option>
-                  </select>
-                </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Status Płatności</label>
+                <select id="budgetPaidStatus" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                  <option value="UNPAID">⏳ Do zapłaty</option>
+                  <option value="PAID">✅ Opłacone / Zrealizowane</option>
+                </select>
               </div>
 
               <div>
@@ -846,9 +846,87 @@
     </div>
   </div>
 
+  <!-- MODAL 4: GOOGLE SYNC SETUP -->
+  <div id="googleSyncModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-6 relative shadow-2xl space-y-4">
+      <button onclick="toggleModal('googleSyncModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 mb-2">
+        <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+          <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Automatyczny Zapis i Odczyt (Dysk Google)</h3>
+          <p class="text-xs text-slate-400">Synchronizacja danych garaz_pro_db.json między urządzeniami</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-300">
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+          <p class="font-semibold text-emerald-400">Skrypt Google Apps Script (Kod.gs):</p>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Pamiętaj, aby skrypt w Apps Script zawierał zarówno funkcję <code>doPost</code> (zapis), jak i <code>doGet</code> (odczyt):
+          </p>
+          <pre class="bg-slate-900 p-2 rounded text-[10px] text-slate-300 font-mono overflow-x-auto select-all border border-slate-800">function doPost(e) {
+  try {
+    var fileName = "garaz_pro_db.json";
+    var jsonContent = e.postData.contents;
+    var files = DriveApp.getFilesByName(fileName);
+    if (files.hasNext()) {
+      var file = files.next();
+      file.setContent(jsonContent);
+    } else {
+      DriveApp.createFile(fileName, jsonContent, MimeType.PLAIN_TEXT);
+    }
+    return ContentService.createTextOutput("OK");
+  } catch (err) {
+    return ContentService.createTextOutput("Błąd: " + err.toString());
+  }
+}
+
+function doGet(e) {
+  try {
+    var fileName = "garaz_pro_db.json";
+    var files = DriveApp.getFilesByName(fileName);
+    if (files.hasNext()) {
+      var content = files.next().getBlob().getDataAsString();
+      return ContentService.createTextOutput(content).setMimeType(ContentService.MimeType.JSON);
+    } else {
+      return ContentService.createTextOutput(JSON.stringify({})).setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Adres Webhooka Google Apps Script (URL):</label>
+          <input type="url" id="googleWebhookInput" placeholder="https://script.google.com/macros/s/.../exec" class="glass-input w-full px-3 py-2 text-xs rounded-xl font-mono">
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+          <button type="button" onclick="testGoogleSync()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 font-semibold rounded-xl text-xs flex items-center gap-1.5 border border-slate-700">
+            <i class="fa-solid fa-paper-plane"></i> Wykonaj Zapis Testowy
+          </button>
+          
+          <div class="flex gap-2">
+            <button type="button" onclick="toggleModal('googleSyncModal', false)" class="px-3.5 py-2 bg-slate-800 text-slate-300 font-semibold rounded-xl text-xs">Zamknij</button>
+            <button type="button" onclick="saveGoogleWebhook()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20">Zapisz URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
   <!-- APPLICATION LOGIC (JAVASCRIPT) -->
   <script>
-    const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyeHUb738gY-UpQlhI5qVR8ji8RNOpzlP7XOjZeYqQxI8qHQXCcRu6L280-NyKnsknn/exec';
+    // --- INITIAL DATA STRUCTURE & STATE ---
     const STORAGE_KEY = 'garaz_pro_db_v2_7';
 
     let appData = {
@@ -880,7 +958,7 @@
         }
       ],
       budgetItems: [],
-      googleWebhookUrl: DEFAULT_WEBHOOK_URL
+      googleWebhookUrl: ''
     };
 
     let activeCategoryFilter = 'ALL';
@@ -891,44 +969,16 @@
     document.addEventListener("DOMContentLoaded", () => {
       loadDataFromStorage();
       
+      // Set default form date to today
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('partDate').value = today;
       document.getElementById('budgetDueDate').value = today;
 
       renderAll();
 
+      // Automatyczne pobranie najnowszych danych z Dysku Google przy otwarciu
       fetchDataFromGoogleDrive();
     });
-
-    window.addEventListener('focus', () => {
-      fetchDataFromGoogleDrive();
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        fetchDataFromGoogleDrive();
-      }
-    });
-
-    // --- TOGGLE COLLAPSIBLE FORMS ---
-    function toggleCollapsible(elementId, iconId) {
-      const el = document.getElementById(elementId);
-      const icon = document.getElementById(iconId);
-      
-      if (el.classList.contains('hidden')) {
-        el.classList.remove('hidden');
-        if (icon) {
-          icon.classList.remove('fa-circle-plus');
-          icon.classList.add('fa-circle-minus');
-        }
-      } else {
-        el.classList.add('hidden');
-        if (icon) {
-          icon.classList.remove('fa-circle-minus');
-          icon.classList.add('fa-circle-plus');
-        }
-      }
-    }
 
     // --- SWITCH MODULES (GARAŻ / BUDŻET) ---
     function switchModule(mod) {
@@ -966,8 +1016,14 @@
         }
       }
 
-      appData.googleWebhookUrl = DEFAULT_WEBHOOK_URL;
+      const backupUrl = localStorage.getItem('garaz_pro_webhook_backup');
+      if (!appData.googleWebhookUrl && backupUrl) {
+        appData.googleWebhookUrl = backupUrl;
+      }
+      
       ensureValidDataStructure();
+      document.getElementById('googleWebhookInput').value = appData.googleWebhookUrl || '';
+      updateSyncIndicator();
     }
 
     function ensureValidDataStructure() {
@@ -997,22 +1053,28 @@
 
     function saveDataToStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      updateSyncIndicator();
 
-      syncFullJsonToGoogleDrive().then(() => {
-        setTimeout(() => {
-          fetchDataFromGoogleDrive();
-        }, 800);
-      });
+      // AUTOMATYCZNIE NADPISUJE PLIK garaz_pro_db.json NA DYSKU GOOGLE:
+      syncFullJsonToGoogleDrive();
+    }
+
+    function updateSyncIndicator() {
+      const ind = document.getElementById('syncIndicator');
+      if (appData.googleWebhookUrl && appData.googleWebhookUrl.trim() !== '') {
+        ind.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-slate-900 animate-pulse';
+      } else {
+        ind.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 bg-slate-500 rounded-full border-2 border-slate-900';
+      }
     }
 
     function syncFullJsonToGoogleDrive() {
-      const webhookUrl = appData.googleWebhookUrl || DEFAULT_WEBHOOK_URL;
-      if (!webhookUrl) return Promise.resolve();
+      if (!appData.googleWebhookUrl) return;
 
-      return fetch(webhookUrl, {
+      fetch(appData.googleWebhookUrl, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(appData, null, 2)
       }).then(() => {
         console.log("Zapisano/Nadpisano plik garaz_pro_db.json na Dysku Google");
@@ -1021,22 +1083,23 @@
       });
     }
 
+    // --- POBIERANIE DANYCH Z DYSKU GOOGLE PRZY OTWARCIU STRONY ---
     function fetchDataFromGoogleDrive() {
-      const webhookUrl = appData.googleWebhookUrl || DEFAULT_WEBHOOK_URL;
+      const webhookUrl = appData.googleWebhookUrl || localStorage.getItem('garaz_pro_webhook_backup');
       if (!webhookUrl) return;
 
-      const urlWithCacheBuster = webhookUrl + (webhookUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
-
-      fetch(urlWithCacheBuster, { cache: 'no-store' })
+      fetch(webhookUrl)
         .then(res => res.json())
         .then(remoteData => {
           if (remoteData && remoteData.vehicles && remoteData.vehicles.length > 0) {
+            const currentWebhook = appData.googleWebhookUrl || webhookUrl;
             appData = remoteData;
-            appData.googleWebhookUrl = DEFAULT_WEBHOOK_URL;
+            appData.googleWebhookUrl = currentWebhook;
 
             ensureValidDataStructure();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
             renderAll();
+            showToast("Zsynchronizowano z Dyskiem Google", "info");
           }
         })
         .catch(err => {
@@ -1044,6 +1107,7 @@
         });
     }
 
+    // --- RENDER ALL UI COMPONENTS ---
     function renderAll() {
       renderVehicleSelector();
       renderActiveVehicleDetails();
@@ -1055,6 +1119,7 @@
       renderBudget();
     }
 
+    // --- VEHICLE SELECTOR & DETAILS ---
     function renderVehicleSelector() {
       const select = document.getElementById('vehicleSelect');
       select.innerHTML = '';
@@ -1072,6 +1137,7 @@
       appData.activeVehicleId = vehId;
       saveDataToStorage();
       renderAll();
+      showToast("Przełączono pojazd", "info");
     }
 
     function getActiveVehicle() {
@@ -1086,6 +1152,7 @@
       document.getElementById('activeVehicleSub').textContent = `Rok prod.: ${current.year || 'b.d.'} | Paliwo: ${current.fuel || 'Benzyna'}`;
     }
 
+    // --- DOCUMENT DATES & EXPIRATION CALCULATION ---
     function calculateDaysLeft(dateStr) {
       if (!dateStr) return null;
       const today = new Date();
@@ -1101,6 +1168,7 @@
     function renderDocumentDates() {
       const current = getActiveVehicle();
 
+      // Technical Inspection
       const inspDays = calculateDaysLeft(current.nextInspection);
       const inspText = document.getElementById('inspectionDateText');
       const inspBadge = document.getElementById('inspectionBadge');
@@ -1126,6 +1194,7 @@
         inspBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
       }
 
+      // OC Insurance
       const ocDays = calculateDaysLeft(current.ocExpiration);
       const ocText = document.getElementById('ocDateText');
       const ocBadge = document.getElementById('ocBadge');
@@ -1157,6 +1226,7 @@
         current.mileage = newKm;
         saveDataToStorage();
         renderAll();
+        showToast(`Zaktualizowano przebieg do ${newKm.toLocaleString('pl-PL')} km`);
       }
     }
 
@@ -1173,6 +1243,7 @@
         appData.activeVehicleId = appData.vehicles[0].id;
         saveDataToStorage();
         renderAll();
+        showToast("Usunięto pojazd", "warning");
       }
     }
 
@@ -1198,8 +1269,10 @@
       toggleModal('addVehicleModal', false);
       e.target.reset();
       renderAll();
+      showToast(`Dodano pojazd: ${newVeh.name}`);
     }
 
+    // --- EDIT VEHICLE DETAILS MODAL LOGIC ---
     function openEditVehicleModal() {
       const current = getActiveVehicle();
       document.getElementById('editVehicleName').value = current.name || '';
@@ -1232,8 +1305,10 @@
       saveDataToStorage();
       toggleModal('editVehicleModal', false);
       renderAll();
+      showToast("Zaktualizowano dane pojazdu!", "success");
     }
 
+    // --- STATISTICS CALCULATION ---
     function getActiveEntries() {
       return appData.entries.filter(e => e.vehicleId === appData.activeVehicleId);
     }
@@ -1242,19 +1317,23 @@
       const activeVeh = getActiveVehicle();
       const entries = getActiveEntries();
 
+      // Przebieg
       let maxEntryMileage = entries.reduce((max, e) => Math.max(max, e.mileage || 0), 0);
       let currentMileage = Math.max(activeVeh.mileage || 0, maxEntryMileage);
       document.getElementById('statMileage').textContent = `${currentMileage.toLocaleString('pl-PL')} km`;
 
+      // Łączny Koszt
       const totalCost = entries.reduce((sum, e) => sum + (parseFloat(e.cost) || 0), 0);
       document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
 
+      // Liczba Serwisów
       const count = entries.length;
       document.getElementById('statServicesCount').textContent = count;
       
       const avg = count > 0 ? (totalCost / count) : 0;
       document.getElementById('statAvgCost').textContent = `Średnio: ${avg.toFixed(0)} PLN / wpis`;
 
+      // Ostatnia Usługa
       if (entries.length > 0) {
         const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
         const last = sorted[0];
@@ -1266,6 +1345,7 @@
       }
     }
 
+    // --- SMART SERVICE ALERT ---
     function renderSmartAlert() {
       const entries = getActiveEntries();
       const activeVeh = getActiveVehicle();
@@ -1339,6 +1419,7 @@
       }
     }
 
+    // --- EXPENSE ANALYTICS (CATEGORY BREAKDOWN) ---
     function renderExpenseAnalytics() {
       const entries = getActiveEntries();
       const container = document.getElementById('analyticsBars');
@@ -1391,6 +1472,7 @@
       });
     }
 
+    // --- FORM SUBMISSION (ADD NEW ENTRY) ---
     function handleFormSubmit(e) {
       e.preventDefault();
 
@@ -1420,8 +1502,10 @@
       document.getElementById('partDate').value = new Date().toISOString().split('T')[0];
 
       renderAll();
+      showToast("Dodano wpis serwisowy!");
     }
 
+    // --- EDIT SERVICE ENTRY LOGIC ---
     function openEditModal(entryId) {
       const entry = appData.entries.find(e => e.id === entryId);
       if (!entry) return;
@@ -1465,6 +1549,7 @@
       saveDataToStorage();
       toggleModal('editEntryModal', false);
       renderAll();
+      showToast("Zaktualizowano wpis serwisowy!", "success");
     }
 
     function deleteEntry(entryId) {
@@ -1472,9 +1557,11 @@
         appData.entries = appData.entries.filter(e => e.id !== entryId);
         saveDataToStorage();
         renderAll();
+        showToast("Usunięto wpis", "warning");
       }
     }
 
+    // --- FILTER & SEARCH & HISTORY RENDER ---
     function setCategoryFilter(category) {
       activeCategoryFilter = category;
       
@@ -1589,6 +1676,7 @@
       });
     }
 
+    // --- LOGIKA MODUŁU BUDŻETOWEGO ---
     function handleBudgetSubmit(e) {
       e.preventDefault();
 
@@ -1598,7 +1686,6 @@
         name: document.getElementById('budgetName').value.trim(),
         amount: parseFloat(document.getElementById('budgetAmount').value) || 0,
         dueDate: document.getElementById('budgetDueDate').value,
-        person: document.getElementById('budgetPerson').value.trim(),
         isPaid: document.getElementById('budgetPaidStatus').value === 'PAID',
         notes: document.getElementById('budgetNotes').value.trim()
       };
@@ -1610,6 +1697,7 @@
       document.getElementById('budgetDueDate').value = new Date().toISOString().split('T')[0];
 
       renderBudget();
+      showToast("Dodano pozycję budżetową!");
     }
 
     function toggleBudgetPaid(id) {
@@ -1618,6 +1706,7 @@
         item.isPaid = !item.isPaid;
         saveDataToStorage();
         renderBudget();
+        showToast(item.isPaid ? "Oznaczono jako opłacone" : "Status zaktualizowany", "info");
       }
     }
 
@@ -1626,6 +1715,7 @@
         appData.budgetItems = appData.budgetItems.filter(b => b.id !== id);
         saveDataToStorage();
         renderBudget();
+        showToast("Usunięto pozycję z budżetu", "warning");
       }
     }
 
@@ -1702,7 +1792,6 @@
               <div class="flex items-center gap-2 flex-wrap">
                 <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.type}</span>
-                ${item.person ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"><i class="fa-solid fa-user text-[9px] mr-1"></i>${escapeHtml(item.person)}</span>` : ''}
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${item.isPaid ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${item.isPaid ? 'Opłacone' : 'Do zapłaty'}</span>
               </div>
 
@@ -1726,6 +1815,29 @@
       });
     }
 
+    // --- GOOGLE DRIVE SYNC SETTINGS ---
+    function saveGoogleWebhook() {
+      const url = document.getElementById('googleWebhookInput').value.trim();
+      appData.googleWebhookUrl = url;
+      if (url) localStorage.setItem('garaz_pro_webhook_backup', url);
+      saveDataToStorage();
+      toggleModal('googleSyncModal', false);
+      showToast("Zapisano konfigurację Kopii Zapasowej");
+      fetchDataFromGoogleDrive();
+    }
+
+    function testGoogleSync() {
+      const url = document.getElementById('googleWebhookInput').value.trim();
+      if (!url) {
+        alert("Wprowadź wpierw adres URL skryptu!");
+        return;
+      }
+      
+      syncFullJsonToGoogleDrive();
+      alert("Wysłano dane testowe! Sprawdź czy plik garaz_pro_db.json pojawił się na Twoim Dysku Google.");
+    }
+
+    // --- EXPORT & IMPORT BACKUP (JSON) ---
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
       const downloadAnchor = document.createElement('a');
@@ -1735,6 +1847,7 @@
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
+      showToast("Pobrano kopię zapasową JSON");
     }
 
     function triggerImport() {
@@ -1753,6 +1866,7 @@
             appData = imported;
             saveDataToStorage();
             renderAll();
+            showToast("Pomyślnie zaimportowano dane!");
           } else {
             alert("Niepoprawny format pliku kopii zapasowej.");
           }
@@ -1763,6 +1877,7 @@
       reader.readAsText(file);
     }
 
+    // --- UTILITIES & HELPERS ---
     function toggleModal(modalId, show) {
       const modal = document.getElementById(modalId);
       if (show) {
@@ -1783,6 +1898,31 @@
 
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const colors = {
+        success: 'bg-emerald-500 text-slate-950',
+        warning: 'bg-amber-500 text-slate-950',
+        info: 'bg-cyan-500 text-slate-950'
+      };
+
+      toast.className = `${colors[type] || colors.success} font-bold text-xs px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 flex items-center space-x-2 pointer-events-auto`;
+      toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${message}</span>`;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
   </script>
 </body>

@@ -120,7 +120,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="text-xl font-extrabold tracking-wide text-white uppercase">Garaż<span class="text-amber-500">Pro</span></h1>
-              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.2</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.3</span>
             </div>
             <p class="text-xs text-slate-400">Dziennik Serwisowy & Budżet</p>
           </div>
@@ -543,12 +543,18 @@
                 </div>
               </div>
 
-              <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">Status Płatności</label>
-                <select id="budgetPaidStatus" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
-                  <option value="UNPAID">⏳ Do zapłaty</option>
-                  <option value="PAID">✅ Opłacone / Zrealizowane</option>
-                </select>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Osoba / Właściciel</label>
+                  <input type="text" id="budgetPerson" placeholder="np. Marcel lub Martyna" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Status Płatności</label>
+                  <select id="budgetPaidStatus" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                    <option value="UNPAID">⏳ Do zapłaty</option>
+                    <option value="PAID">✅ Opłacone</option>
+                  </select>
+                </div>
               </div>
 
               <div>
@@ -1015,7 +1021,6 @@
       });
     }
 
-    // --- POBIERANIE DANYCH Z DYSKU GOOGLE (Z OMIJANIEM CACHE) ---
     function fetchDataFromGoogleDrive() {
       const webhookUrl = appData.googleWebhookUrl || DEFAULT_WEBHOOK_URL;
       if (!webhookUrl) return;
@@ -1039,7 +1044,6 @@
         });
     }
 
-    // --- RENDER ALL UI COMPONENTS ---
     function renderAll() {
       renderVehicleSelector();
       renderActiveVehicleDetails();
@@ -1051,7 +1055,6 @@
       renderBudget();
     }
 
-    // --- VEHICLE SELECTOR & DETAILS ---
     function renderVehicleSelector() {
       const select = document.getElementById('vehicleSelect');
       select.innerHTML = '';
@@ -1083,7 +1086,6 @@
       document.getElementById('activeVehicleSub').textContent = `Rok prod.: ${current.year || 'b.d.'} | Paliwo: ${current.fuel || 'Benzyna'}`;
     }
 
-    // --- DOCUMENT DATES & EXPIRATION CALCULATION ---
     function calculateDaysLeft(dateStr) {
       if (!dateStr) return null;
       const today = new Date();
@@ -1596,6 +1598,7 @@
         name: document.getElementById('budgetName').value.trim(),
         amount: parseFloat(document.getElementById('budgetAmount').value) || 0,
         dueDate: document.getElementById('budgetDueDate').value,
+        person: document.getElementById('budgetPerson').value.trim(),
         isPaid: document.getElementById('budgetPaidStatus').value === 'PAID',
         notes: document.getElementById('budgetNotes').value.trim()
       };
@@ -1699,6 +1702,7 @@
               <div class="flex items-center gap-2 flex-wrap">
                 <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.type}</span>
+                ${item.person ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"><i class="fa-solid fa-user text-[9px] mr-1"></i>${escapeHtml(item.person)}</span>` : ''}
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${item.isPaid ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${item.isPaid ? 'Opłacone' : 'Do zapłaty'}</span>
               </div>
 

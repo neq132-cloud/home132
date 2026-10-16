@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl" class="dark">
 <head>
   <meta charset="UTF-8">
@@ -840,9 +840,6 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
-
   <!-- APPLICATION LOGIC (JAVASCRIPT) -->
   <script>
     const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyeHUb738gY-UpQlhI5qVR8ji8RNOpzlP7XOjZeYqQxI8qHQXCcRu6L280-NyKnsknn/exec';
@@ -888,18 +885,15 @@
     document.addEventListener("DOMContentLoaded", () => {
       loadDataFromStorage();
       
-      // Set default form date to today
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('partDate').value = today;
       document.getElementById('budgetDueDate').value = today;
 
       renderAll();
 
-      // Automatyczne pobranie najnowszych danych z Dysku Google przy otwarciu
       fetchDataFromGoogleDrive();
     });
 
-    // --- AUTOMATYCZNE ODSWIEŻANIE PRZY RUCHU / AKTYWNOŚCI UŻYTKOWNIKA ---
     window.addEventListener('focus', () => {
       fetchDataFromGoogleDrive();
     });
@@ -998,7 +992,6 @@
     function saveDataToStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
 
-      // Wysyła dane na Dysk Google, a następnie wymusza ponowne pobranie
       syncFullJsonToGoogleDrive().then(() => {
         setTimeout(() => {
           fetchDataFromGoogleDrive();
@@ -1039,7 +1032,6 @@
             ensureValidDataStructure();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
             renderAll();
-            showToast("Zsynchronizowano z Dyskiem Google", "info");
           }
         })
         .catch(err => {
@@ -1077,7 +1069,6 @@
       appData.activeVehicleId = vehId;
       saveDataToStorage();
       renderAll();
-      showToast("Przełączono pojazd", "info");
     }
 
     function getActiveVehicle() {
@@ -1108,7 +1099,6 @@
     function renderDocumentDates() {
       const current = getActiveVehicle();
 
-      // Technical Inspection
       const inspDays = calculateDaysLeft(current.nextInspection);
       const inspText = document.getElementById('inspectionDateText');
       const inspBadge = document.getElementById('inspectionBadge');
@@ -1134,7 +1124,6 @@
         inspBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
       }
 
-      // OC Insurance
       const ocDays = calculateDaysLeft(current.ocExpiration);
       const ocText = document.getElementById('ocDateText');
       const ocBadge = document.getElementById('ocBadge');
@@ -1166,7 +1155,6 @@
         current.mileage = newKm;
         saveDataToStorage();
         renderAll();
-        showToast(`Zaktualizowano przebieg do ${newKm.toLocaleString('pl-PL')} km`);
       }
     }
 
@@ -1183,7 +1171,6 @@
         appData.activeVehicleId = appData.vehicles[0].id;
         saveDataToStorage();
         renderAll();
-        showToast("Usunięto pojazd", "warning");
       }
     }
 
@@ -1209,10 +1196,8 @@
       toggleModal('addVehicleModal', false);
       e.target.reset();
       renderAll();
-      showToast(`Dodano pojazd: ${newVeh.name}`);
     }
 
-    // --- EDIT VEHICLE DETAILS MODAL LOGIC ---
     function openEditVehicleModal() {
       const current = getActiveVehicle();
       document.getElementById('editVehicleName').value = current.name || '';
@@ -1245,10 +1230,8 @@
       saveDataToStorage();
       toggleModal('editVehicleModal', false);
       renderAll();
-      showToast("Zaktualizowano dane pojazdu!", "success");
     }
 
-    // --- STATISTICS CALCULATION ---
     function getActiveEntries() {
       return appData.entries.filter(e => e.vehicleId === appData.activeVehicleId);
     }
@@ -1257,23 +1240,19 @@
       const activeVeh = getActiveVehicle();
       const entries = getActiveEntries();
 
-      // Przebieg
       let maxEntryMileage = entries.reduce((max, e) => Math.max(max, e.mileage || 0), 0);
       let currentMileage = Math.max(activeVeh.mileage || 0, maxEntryMileage);
       document.getElementById('statMileage').textContent = `${currentMileage.toLocaleString('pl-PL')} km`;
 
-      // Łączny Koszt
       const totalCost = entries.reduce((sum, e) => sum + (parseFloat(e.cost) || 0), 0);
       document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
 
-      // Liczba Serwisów
       const count = entries.length;
       document.getElementById('statServicesCount').textContent = count;
       
       const avg = count > 0 ? (totalCost / count) : 0;
       document.getElementById('statAvgCost').textContent = `Średnio: ${avg.toFixed(0)} PLN / wpis`;
 
-      // Ostatnia Usługa
       if (entries.length > 0) {
         const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
         const last = sorted[0];
@@ -1285,7 +1264,6 @@
       }
     }
 
-    // --- SMART SERVICE ALERT ---
     function renderSmartAlert() {
       const entries = getActiveEntries();
       const activeVeh = getActiveVehicle();
@@ -1359,7 +1337,6 @@
       }
     }
 
-    // --- EXPENSE ANALYTICS (CATEGORY BREAKDOWN) ---
     function renderExpenseAnalytics() {
       const entries = getActiveEntries();
       const container = document.getElementById('analyticsBars');
@@ -1412,7 +1389,6 @@
       });
     }
 
-    // --- FORM SUBMISSION (ADD NEW ENTRY) ---
     function handleFormSubmit(e) {
       e.preventDefault();
 
@@ -1442,10 +1418,8 @@
       document.getElementById('partDate').value = new Date().toISOString().split('T')[0];
 
       renderAll();
-      showToast("Dodano wpis serwisowy!");
     }
 
-    // --- EDIT SERVICE ENTRY LOGIC ---
     function openEditModal(entryId) {
       const entry = appData.entries.find(e => e.id === entryId);
       if (!entry) return;
@@ -1489,7 +1463,6 @@
       saveDataToStorage();
       toggleModal('editEntryModal', false);
       renderAll();
-      showToast("Zaktualizowano wpis serwisowy!", "success");
     }
 
     function deleteEntry(entryId) {
@@ -1497,11 +1470,9 @@
         appData.entries = appData.entries.filter(e => e.id !== entryId);
         saveDataToStorage();
         renderAll();
-        showToast("Usunięto wpis", "warning");
       }
     }
 
-    // --- FILTER & SEARCH & HISTORY RENDER ---
     function setCategoryFilter(category) {
       activeCategoryFilter = category;
       
@@ -1616,7 +1587,6 @@
       });
     }
 
-    // --- LOGIKA MODUŁU BUDŻETOWEGO ---
     function handleBudgetSubmit(e) {
       e.preventDefault();
 
@@ -1637,7 +1607,6 @@
       document.getElementById('budgetDueDate').value = new Date().toISOString().split('T')[0];
 
       renderBudget();
-      showToast("Dodano pozycję budżetową!");
     }
 
     function toggleBudgetPaid(id) {
@@ -1646,7 +1615,6 @@
         item.isPaid = !item.isPaid;
         saveDataToStorage();
         renderBudget();
-        showToast(item.isPaid ? "Oznaczono jako opłacone" : "Status zaktualizowany", "info");
       }
     }
 
@@ -1655,7 +1623,6 @@
         appData.budgetItems = appData.budgetItems.filter(b => b.id !== id);
         saveDataToStorage();
         renderBudget();
-        showToast("Usunięto pozycję z budżetu", "warning");
       }
     }
 
@@ -1755,7 +1722,6 @@
       });
     }
 
-    // --- EXPORT & IMPORT BACKUP (JSON) ---
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
       const downloadAnchor = document.createElement('a');
@@ -1765,7 +1731,6 @@
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
-      showToast("Pobrano kopię zapasową JSON");
     }
 
     function triggerImport() {
@@ -1784,7 +1749,6 @@
             appData = imported;
             saveDataToStorage();
             renderAll();
-            showToast("Pomyślnie zaimportowano dane!");
           } else {
             alert("Niepoprawny format pliku kopii zapasowej.");
           }
@@ -1795,7 +1759,6 @@
       reader.readAsText(file);
     }
 
-    // --- UTILITIES & HELPERS ---
     function toggleModal(modalId, show) {
       const modal = document.getElementById(modalId);
       if (show) {
@@ -1816,31 +1779,6 @@
 
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
-
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      
-      const colors = {
-        success: 'bg-emerald-500 text-slate-950',
-        warning: 'bg-amber-500 text-slate-950',
-        info: 'bg-cyan-500 text-slate-950'
-      };
-
-      toast.className = `${colors[type] || colors.success} font-bold text-xs px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 flex items-center space-x-2 pointer-events-auto`;
-      toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${message}</span>`;
-
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-      }, 10);
-
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-2');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
     }
   </script>
 </body>

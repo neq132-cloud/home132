@@ -1,0 +1,1847 @@
+﻿<!DOCTYPE html>
+<html lang="pl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GarażPro - Dziennik Serwisowy & Budżet</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#090d16',
+              card: '#111827',
+              border: '#1f2937',
+              cyan: '#06b6d4',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+              rose: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #090d16;
+      color: #f3f4f6;
+      min-height: 100vh;
+    }
+
+    /* Custom Glassmorphism Panels */
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-input {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .glass-input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f2937;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #374151;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Modal Animation */
+    .modal-backdrop {
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(6px);
+    }
+
+    .entry-card {
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+    .entry-card:hover {
+      background-color: rgba(31, 41, 55, 0.6);
+    }
+  </style>
+</head>
+<body class="pb-12 text-slate-100">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Logo & Title & Moduły -->
+      <div class="flex items-center justify-between w-full md:w-auto gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-amber-500 p-0.5 shadow-lg shadow-cyan-500/10">
+            <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <i class="fa-solid fa-gauge-high text-cyan-400 text-lg"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl font-extrabold tracking-wide text-white uppercase">Garaż<span class="text-amber-500">Pro</span></h1>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.2</span>
+            </div>
+            <p class="text-xs text-slate-400">Dziennik Serwisowy & Budżet</p>
+          </div>
+        </div>
+
+        <!-- Przełącznik Modułów Garaż / Budżet -->
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <button onclick="switchModule('garaz')" id="navGaraz" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 shadow-md transition">
+            <i class="fa-solid fa-car mr-1.5"></i> Garaż
+          </button>
+          <button onclick="switchModule('budzet')" id="navBudzet" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-wallet mr-1.5"></i> Budżet
+          </button>
+        </div>
+
+        <!-- Mobile Add Vehicle Button -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button onclick="toggleModal('addVehicleModal', true)" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl border border-slate-700">
+            <i class="fa-solid fa-car-plus text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Vehicle Switcher & Actions -->
+      <div id="garazControls" class="flex items-center space-x-3 w-full md:w-auto">
+        <div class="relative flex-1 md:w-64">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <i class="fa-solid fa-car"></i>
+          </div>
+          <select id="vehicleSelect" onchange="switchVehicle(this.value)" class="glass-input pl-9 pr-8 py-2 w-full text-sm rounded-xl appearance-none cursor-pointer font-medium"></select>
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 text-xs">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+
+        <button onclick="toggleModal('addVehicleModal', true)" class="hidden md:flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span>Auto</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+
+    <!-- ==================== MODUŁ GARAŻ ==================== -->
+    <div id="moduleGaraz" class="space-y-6">
+
+      <!-- ACTIVE VEHICLE HEADER & QUICK ACTIONS -->
+      <div id="vehicleBanner" class="glass-panel p-5 rounded-2xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+        <div class="flex items-center space-x-4">
+          <div id="vehicleAvatar" class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-500 text-2xl font-bold shadow-inner shrink-0">
+            <i class="fa-solid fa-car-side"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2 id="activeVehicleName" class="text-xl font-bold text-white">Ładowanie...</h2>
+              <span id="activeVehiclePlate" class="px-2.5 py-0.5 text-xs font-mono font-semibold bg-slate-800 text-amber-400 border border-amber-500/30 rounded-md">---</span>
+              <span id="activeVehicleEngine" class="text-xs text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">---</span>
+            </div>
+            <p id="activeVehicleSub" class="text-xs text-slate-400 mt-1">Rok prod.: --- | Paliwo: ---</p>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="flex items-center space-x-2 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-800 flex-wrap gap-y-2">
+          <button onclick="openEditVehicleModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-pen-to-square text-cyan-400"></i> Edytuj Pojazd
+          </button>
+          <button onclick="promptUpdateMileage()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-cyan-400 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-gauge"></i> Aktualizuj Przebieg
+          </button>
+          <button onclick="deleteCurrentVehicle()" class="px-2.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-xs text-red-400 font-medium rounded-lg border border-red-500/20 transition" title="Usuń pojazd">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- DOCUMENT DATES & EXPIRATION DASHBOARD WIDGETS (PRZEGLAD & OC) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Card 1: Przeglad Techniczny -->
+        <div id="inspectionCard" class="glass-panel p-4 rounded-2xl border flex items-center justify-between relative overflow-hidden">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg shrink-0">
+              <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Przegląd Techniczny Badanie</p>
+              <div class="flex items-center gap-2 mt-0.5">
+                <h4 id="inspectionDateText" class="text-base font-bold text-white">Brak daty</h4>
+                <span id="inspectionBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-400 border-slate-700">BRAK DANYCH</span>
+              </div>
+              <p id="inspectionSubText" class="text-[11px] text-slate-400 mt-0.5">Ostatnie badanie: b.d.</p>
+            </div>
+          </div>
+          <button onclick="openEditVehicleModal()" class="p-2 text-slate-400 hover:text-white text-xs bg-slate-800/80 hover:bg-slate-700 rounded-lg border border-slate-700 transition" title="Zmień datę">
+            <i class="fa-solid fa-calendar-days"></i>
+          </button>
+        </div>
+
+        <!-- Card 2: Ubezpieczenie OC -->
+        <div id="ocCard" class="glass-panel p-4 rounded-2xl border flex items-center justify-between relative overflow-hidden">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg shrink-0">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Ubezpieczenie OC Ważne Do</p>
+              <div class="flex items-center gap-2 mt-0.5">
+                <h4 id="ocDateText" class="text-base font-bold text-white">Brak daty</h4>
+                <span id="ocBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-400 border-slate-700">BRAK DANYCH</span>
+              </div>
+              <p id="ocSubText" class="text-[11px] text-slate-400 mt-0.5">Polisa OC</p>
+            </div>
+          </div>
+          <button onclick="openEditVehicleModal()" class="p-2 text-slate-400 hover:text-white text-xs bg-slate-800/80 hover:bg-slate-700 rounded-lg border border-slate-700 transition" title="Zmień datę">
+            <i class="fa-solid fa-calendar-days"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- SMART SERVICE ALERT BANNER -->
+      <div id="smartAlert" class="glass-panel p-4 rounded-2xl border-l-4 border-l-cyan-500 bg-cyan-500/5 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl shrink-0">
+            <i class="fa-solid fa-bell-concierge text-lg"></i>
+          </div>
+          <div>
+            <h4 id="alertTitle" class="text-sm font-bold text-cyan-400">Brak Danych o Wymianie Oleju</h4>
+            <p id="alertDesc" class="text-xs text-slate-300">Dodaj pierwszą wymianę oleju, aby uruchomić inteligentne przypomnienia.</p>
+          </div>
+        </div>
+        <span id="alertBadge" class="text-[11px] font-semibold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-500/30">INFORMACJA</span>
+      </div>
+
+      <!-- DASHBOARD STATS CARDS -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Stat 1: Przebieg Główny -->
+        <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-slate-800/40 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-gauge-high"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Przebieg Główny</p>
+          <h3 id="statMileage" class="text-2xl font-black text-white mt-1">0 km</h3>
+          <p id="statMileageSub" class="text-[11px] text-cyan-400 mt-1 flex items-center gap-1">
+            <i class="fa-solid fa-clock-rotate-left"></i> Ostatnia wpisana wartość
+          </p>
+        </div>
+
+        <!-- Stat 2: Łączny Koszt -->
+        <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-cyan-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Suma Wydatków</p>
+          <h3 id="statTotalCost" class="text-2xl font-black text-cyan-400 mt-1">0 PLN</h3>
+          <p id="statCostSub" class="text-[11px] text-slate-400 mt-1">Łącznie dla auta</p>
+        </div>
+
+        <!-- Stat 3: Liczba Napraw -->
+        <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-amber-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Liczba Serwisów</p>
+          <h3 id="statServicesCount" class="text-2xl font-black text-amber-400 mt-1">0</h3>
+          <p id="statAvgCost" class="text-[11px] text-slate-400 mt-1">Średnio: 0 PLN / wpis</p>
+        </div>
+
+        <!-- Stat 4: Ostatnia Usługa -->
+        <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-emerald-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ostatnia Wymiana</p>
+          <h3 id="statLastDate" class="text-lg font-bold text-white mt-1.5 truncate">Brak wpisów</h3>
+          <p id="statLastPart" class="text-[11px] text-slate-400 mt-0.5 truncate">-</p>
+        </div>
+
+      </div>
+
+      <!-- WORKSPACE GRID: FORM & HISTORY -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: ADD ENTRY FORM & ANALYTICS (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+          
+          <!-- Form Card Zwijany -->
+          <div class="glass-panel p-5 rounded-2xl border relative">
+            <div onclick="toggleCollapsible('serviceForm', 'serviceFormIcon')" class="flex items-center justify-between cursor-pointer select-none pb-3 border-b border-slate-800">
+              <h3 class="font-bold text-white text-base flex items-center gap-2">
+                <i id="serviceFormIcon" class="fa-solid fa-circle-minus text-cyan-400 transition-transform"></i> Dodaj Wymianę / Naprawę
+              </h3>
+              <span class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Nowy wpis</span>
+            </div>
+
+            <form id="serviceForm" onsubmit="handleFormSubmit(event)" class="space-y-4 pt-4 transition-all duration-300">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Nazwa części / Wykonanej naprawy *</label>
+                <input type="text" id="partName" required placeholder="np. Wymiana oleju 5W30 + filtr" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Koszt (PLN) *</label>
+                  <input type="number" id="partCost" step="0.01" min="0" required placeholder="np. 280" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Przebieg (km) *</label>
+                  <input type="number" id="partMileage" min="0" required placeholder="np. 185000" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Data Naprawy *</label>
+                  <input type="date" id="partDate" required class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Kategoria</label>
+                  <select id="partCategory" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                    <option value="Silnik">Silnik / Oleje</option>
+                    <option value="Hamulce">Układ Hamulcowy</option>
+                    <option value="Zawieszenie">Zawieszenie / Kier.</option>
+                    <option value="Elektryka">Elektryka / Klimatyzacja</option>
+                    <option value="Opony">Opony / Koła</option>
+                    <option value="Inne">Inne / Akcesoria</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Uwagi / Marka części (opcjonalnie)</label>
+                <textarea id="partNotes" rows="2" placeholder="np. Filtr Mann-Filter, Olej Motul Specific" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Zapisz w Dzienniku</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- VISUAL EXPENSE ANALYTICS CARD -->
+          <div class="glass-panel p-5 rounded-2xl border space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-amber-400"></i> Podział Wydatków
+              </h4>
+              <span class="text-xs text-slate-400">Wg kategorii</span>
+            </div>
+
+            <div id="analyticsBars" class="space-y-3"><p class="text-xs text-slate-500 text-center py-2">Brak zarejestrowanych wydatków</p></div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: HISTORY & LOGS (8 cols) -->
+        <div class="lg:col-span-8 space-y-4">
+          
+          <!-- Controls: Search & Category Pills & Export -->
+          <div class="glass-panel p-4 rounded-2xl border space-y-3">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <!-- Search bar -->
+              <div class="relative w-full sm:w-72">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                <input type="text" id="searchInput" oninput="renderHistory()" placeholder="Szukaj nazwy, marki, uwag..." class="glass-input pl-8 pr-3 py-1.5 w-full text-xs rounded-xl">
+              </div>
+
+              <!-- Import / Export / Backup Buttons -->
+              <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="exportJSON()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-xl border border-slate-700 flex items-center gap-1.5 transition" title="Pobierz kopię zapasową">
+                  <i class="fa-solid fa-download text-cyan-400"></i> Eksport
+                </button>
+                <button onclick="triggerImport()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-xl border border-slate-700 flex items-center gap-1.5 transition" title="Wgraj kopię danych">
+                  <i class="fa-solid fa-upload text-amber-400"></i> Import
+                </button>
+                <input type="file" id="importFile" class="hidden" accept=".json" onchange="importJSON(event)">
+              </div>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1 scrollbar-none" id="categoryPills">
+              <button onclick="setCategoryFilter('ALL')" class="pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400">Wszystkie</button>
+              <button onclick="setCategoryFilter('Silnik')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Silnik</button>
+              <button onclick="setCategoryFilter('Hamulce')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Hamulce</button>
+              <button onclick="setCategoryFilter('Zawieszenie')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Zawieszenie</button>
+              <button onclick="setCategoryFilter('Elektryka')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Elektryka</button>
+              <button onclick="setCategoryFilter('Opony')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Opony</button>
+              <button onclick="setCategoryFilter('Inne')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Inne</button>
+            </div>
+          </div>
+
+          <!-- History Log Container -->
+          <div class="glass-panel rounded-2xl border overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-slate-800 flex justify-between items-center bg-slate-900/40">
+              <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-cyan-400"></i> Historia Napraw i Eksploatacji
+              </h3>
+              <span id="recordBadge" class="text-xs bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full border border-slate-700 font-mono">0 wpisów</span>
+            </div>
+
+            <!-- Entries Container -->
+            <div id="historyContainer" class="divide-y divide-slate-800/80"></div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="p-12 text-center text-slate-500 space-y-3">
+              <div class="w-16 h-16 mx-auto rounded-full bg-slate-800/60 flex items-center justify-center text-slate-600 text-2xl">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
+              <p class="text-sm font-medium">Brak zarejestrowanych wymian dla tego pojazdu.</p>
+              <p class="text-xs text-slate-600">Użyj formularza po lewej stronie, aby dodać pierwszy wpis.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== MODUŁ BUDŻET ==================== -->
+    <div id="moduleBudzet" class="space-y-6 hidden">
+
+      <!-- DASHBOARD CARDS BUDŻETU -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Przychody -->
+        <div class="glass-panel p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-emerald-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-hand-holding-dollar"></i> Wypłata / Przychody
+          </p>
+          <h3 id="budgetIncomeTotal" class="text-2xl font-black text-emerald-400 mt-1">0 PLN</h3>
+          <p class="text-[11px] text-slate-400 mt-1">Suma przychodów w miesiącu</p>
+        </div>
+
+        <!-- Raty Kredytów -->
+        <div class="glass-panel p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-amber-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-landmark"></i>
+          </div>
+          <p class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-credit-card"></i> Suma Rat Kredytów
+          </p>
+          <h3 id="budgetLoansTotal" class="text-2xl font-black text-amber-400 mt-1">0 PLN</h3>
+          <p class="text-[11px] text-slate-400 mt-1">Raty kredytowe i pożyczki</p>
+        </div>
+
+        <!-- Wydatki Stałe -->
+        <div class="glass-panel p-4 rounded-2xl border border-rose-500/20 bg-rose-500/5 relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-rose-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-house-chimney-crack"></i>
+          </div>
+          <p class="text-xs font-semibold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Stałe Wydatki
+          </p>
+          <h3 id="budgetFixedTotal" class="text-2xl font-black text-rose-400 mt-1">0 PLN</h3>
+          <p class="text-[11px] text-slate-400 mt-1">Czynsz, prąd, internet, rachunki</p>
+        </div>
+
+        <!-- Zostaje na czysto -->
+        <div class="glass-panel p-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 relative overflow-hidden group">
+          <div class="absolute -right-3 -bottom-3 text-cyan-500/10 text-6xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-piggy-bank"></i>
+          </div>
+          <p class="text-xs font-semibold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-scale-balanced"></i> Zostaje na Czysto
+          </p>
+          <h3 id="budgetNetTotal" class="text-2xl font-black text-cyan-400 mt-1">0 PLN</h3>
+          <p class="text-[11px] text-slate-400 mt-1">Po opłaceniu rat i rachunków</p>
+        </div>
+
+      </div>
+
+      <!-- WORKSPACE: FORMULARZ BUDŻETU & TABELA ROZLICZEŃ -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEWA KOLUMNA: FORMULARZ BUDŻETU ZWIJANY -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="glass-panel p-5 rounded-2xl border relative">
+            <div onclick="toggleCollapsible('budgetForm', 'budgetFormIcon')" class="flex items-center justify-between cursor-pointer select-none pb-3 border-b border-slate-800">
+              <h3 class="font-bold text-white text-base flex items-center gap-2">
+                <i id="budgetFormIcon" class="fa-solid fa-circle-minus text-emerald-400 transition-transform"></i> Dodaj Pozycję Budżetową
+              </h3>
+              <span class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Finanse</span>
+            </div>
+
+            <form id="budgetForm" onsubmit="handleBudgetSubmit(event)" class="space-y-4 pt-4 transition-all duration-300">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Typ Pozycji *</label>
+                <select id="budgetType" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                  <option value="Przychód">💰 Wypłata / Przychód</option>
+                  <option value="Rata">🏛️ Rata Kredytu / Pożyczki</option>
+                  <option value="Stały">🏠 Stały Wydatek Miesięczny</option>
+                  <option value="Bieżący">🛒 Wydatek Zmienny / Bieżący</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Nazwa Pozycji *</label>
+                <input type="text" id="budgetName" required placeholder="np. Wypłata, Rata Renault, Prąd" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Kwota (PLN) *</label>
+                  <input type="number" id="budgetAmount" step="0.01" min="0" required placeholder="np. 4500" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Termin / Data *</label>
+                  <input type="date" id="budgetDueDate" required class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Status Płatności</label>
+                <select id="budgetPaidStatus" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                  <option value="UNPAID">⏳ Do zapłaty</option>
+                  <option value="PAID">✅ Opłacone / Zrealizowane</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Uwagi / Odbiorca (opcjonalnie)</label>
+                <textarea id="budgetNotes" rows="2" placeholder="np. Przelew do 10-go każdego miesiąca" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Zapisz w Budżecie</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- PRAWA KOLUMNA: TABELA ROZLICZEŃ -->
+        <div class="lg:col-span-8 space-y-4">
+          
+          <div class="glass-panel p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none" id="budgetFilterPills">
+              <button onclick="setBudgetFilter('ALL')" id="bFilterAll" class="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400">Wszystkie</button>
+              <button onclick="setBudgetFilter('UNPAID')" id="bFilterUnpaid" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">⏳ Do Zapłaty</button>
+              <button onclick="setBudgetFilter('PAID')" id="bFilterPaid" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">✅ Opłacone</button>
+            </div>
+
+            <span id="paidProgressBadge" class="text-xs font-mono bg-slate-900 px-3 py-1 rounded-full border border-slate-800 text-emerald-400 shrink-0">Opłacono: 0/0</span>
+          </div>
+
+          <div class="glass-panel rounded-2xl border overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-slate-800 flex justify-between items-center bg-slate-900/40">
+              <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-list-numeric text-emerald-400"></i> Zestawienie Rozliczeń i Opłat Miesięcznych
+              </h3>
+              <span id="budgetCountBadge" class="text-xs bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full border border-slate-700 font-mono">0 pozycji</span>
+            </div>
+
+            <div id="budgetContainer" class="divide-y divide-slate-800/80"></div>
+
+            <div id="budgetEmptyState" class="p-12 text-center text-slate-500 space-y-3 hidden">
+              <div class="w-16 h-16 mx-auto rounded-full bg-slate-800/60 flex items-center justify-center text-slate-600 text-2xl">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+              <p class="text-sm font-medium">Brak wpisów w tej kategorii budżetu.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL 1: EDIT SERVICE ENTRY -->
+  <div id="editEntryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-6 relative shadow-2xl space-y-4">
+      <button onclick="toggleModal('editEntryModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 pb-3 border-b border-slate-800">
+        <div class="p-2.5 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20">
+          <i class="fa-solid fa-pen-to-square text-xl"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Edycja Wpisu Serwisowego</h3>
+          <p class="text-xs text-slate-400">Zmodyfikuj szczegóły wybranej wymiany</p>
+        </div>
+      </div>
+
+      <form id="editEntryForm" onsubmit="handleEditEntrySubmit(event)" class="space-y-4">
+        <input type="hidden" id="editEntryId">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Nazwa części / Naprawy *</label>
+          <input type="text" id="editPartName" required class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Koszt (PLN) *</label>
+            <input type="number" id="editPartCost" step="0.01" min="0" required class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Przebieg (km) *</label>
+            <input type="number" id="editPartMileage" min="0" required class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Data Naprawy *</label>
+            <input type="date" id="editPartDate" required class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Kategoria</label>
+            <select id="editPartCategory" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+              <option value="Silnik">Silnik / Oleje</option>
+              <option value="Hamulce">Układ Hamulcowy</option>
+              <option value="Zawieszenie">Zawieszenie / Kier.</option>
+              <option value="Elektryka">Elektryka / Klimatyzacja</option>
+              <option value="Opony">Opony / Koła</option>
+              <option value="Inne">Inne / Akcesoria</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Uwagi / Szczegóły</label>
+          <textarea id="editPartNotes" rows="2" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="toggleModal('editEntryModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl">Anuluj</button>
+          <button type="submit" class="px-5 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/20">Zapisz Zmiany</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: ADD NEW VEHICLE -->
+  <div id="addVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
+      <button onclick="toggleModal('addVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 mb-2">
+        <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
+          <i class="fa-solid fa-car text-xl"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Dodaj Nowy Pojazd</h3>
+          <p class="text-xs text-slate-400">Wprowadź dane i terminy samochodu</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleAddVehicle(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Marka i Model *</label>
+          <input type="text" id="newVehicleName" required placeholder="np. Renault Laguna III" class="glass-input w-full px-3 py-2 rounded-xl">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Numer Rejestracyjny</label>
+            <input type="text" id="newVehiclePlate" placeholder="np. WI 7788X" class="glass-input w-full px-3 py-2 rounded-xl uppercase">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Rok Produkcji</label>
+            <input type="number" id="newVehicleYear" placeholder="2012" class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Silnik / Pojemność</label>
+            <input type="text" id="newVehicleEngine" placeholder="np. 2.0 Turbo (204 KM)" class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Rodzaj Paliwa</label>
+            <select id="newVehicleFuel" class="glass-input w-full px-3 py-2 rounded-xl">
+              <option value="Benzyna">Benzyna</option>
+              <option value="Diesel">Diesel</option>
+              <option value="LPG / Benzyna">LPG / Benzyna</option>
+              <option value="Hybryda">Hybryda</option>
+              <option value="Elektryczny">Elektryczny</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Początkowy Przebieg (km)</label>
+          <input type="number" id="newVehicleMileage" placeholder="np. 215000" class="glass-input w-full px-3 py-2 rounded-xl">
+        </div>
+
+        <!-- DOCUMENT DATES -->
+        <div class="pt-2 border-t border-slate-800 space-y-3">
+          <p class="font-bold text-amber-400 text-xs flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-check"></i> Terminy Badań i Polisy:
+          </p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-300 mb-1">Ostatni Przegląd</label>
+              <input type="date" id="newVehicleLastInsp" class="glass-input w-full px-3 py-2 rounded-xl">
+            </div>
+            <div>
+              <label class="block text-slate-300 mb-1">Następny Przegląd *</label>
+              <input type="date" id="newVehicleNextInsp" class="glass-input w-full px-3 py-2 rounded-xl">
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Ubezpieczenie OC Ważne Do *</label>
+            <input type="date" id="newVehicleOC" class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="toggleModal('addVehicleModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl">Anuluj</button>
+          <button type="submit" class="px-5 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20">Zapisz Pojazd</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: EDIT VEHICLE DETAILS -->
+  <div id="editVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
+      <button onclick="toggleModal('editVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 mb-2">
+        <div class="p-2.5 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20">
+          <i class="fa-solid fa-pen-to-square text-xl"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white">Edycja Danych Pojazdu</h3>
+          <p class="text-xs text-slate-400">Zaktualizuj dane, badanie techniczne i OC</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleEditVehicleSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Marka i Model *</label>
+          <input type="text" id="editVehicleName" required class="glass-input w-full px-3 py-2 rounded-xl">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Numer Rejestracyjny</label>
+            <input type="text" id="editVehiclePlate" class="glass-input w-full px-3 py-2 rounded-xl uppercase">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Rok Produkcji</label>
+            <input type="number" id="editVehicleYear" class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Silnik / Pojemność</label>
+            <input type="text" id="editVehicleEngine" class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Rodzaj Paliwa</label>
+            <select id="editVehicleFuel" class="glass-input w-full px-3 py-2 rounded-xl">
+              <option value="Benzyna">Benzyna</option>
+              <option value="Diesel">Diesel</option>
+              <option value="LPG / Benzyna">LPG / Benzyna</option>
+              <option value="Hybryda">Hybryda</option>
+              <option value="Elektryczny">Elektryczny</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Główny Przebieg (km)</label>
+          <input type="number" id="editVehicleMileage" class="glass-input w-full px-3 py-2 rounded-xl">
+        </div>
+
+        <!-- DOCUMENT DATES -->
+        <div class="pt-2 border-t border-slate-800 space-y-3">
+          <p class="font-bold text-cyan-400 text-xs flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-days"></i> Badanie Techniczne & Polisa OC:
+          </p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-300 mb-1">Ostatni Przegląd</label>
+              <input type="date" id="editVehicleLastInsp" class="glass-input w-full px-3 py-2 rounded-xl">
+            </div>
+            <div>
+              <label class="block text-slate-300 mb-1">Następny Przegląd</label>
+              <input type="date" id="editVehicleNextInsp" class="glass-input w-full px-3 py-2 rounded-xl">
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Ubezpieczenie OC Ważne Do</label>
+            <input type="date" id="editVehicleOC" class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="toggleModal('editVehicleModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl">Anuluj</button>
+          <button type="submit" class="px-5 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20">Zapisz Zmiany</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- APPLICATION LOGIC (JAVASCRIPT) -->
+  <script>
+    const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyeHUb738gY-UpQlhI5qVR8ji8RNOpzlP7XOjZeYqQxI8qHQXCcRu6L280-NyKnsknn/exec';
+    const STORAGE_KEY = 'garaz_pro_db_v2_7';
+
+    let appData = {
+      vehicles: [
+        {
+          id: 'veh_default_1',
+          name: 'Renault Laguna III',
+          plate: 'WI 8821A',
+          year: '2011',
+          engine: '2.0 T (204 KM)',
+          fuel: 'Benzyna',
+          mileage: 215000,
+          lastInspection: '2025-11-10',
+          nextInspection: '2026-11-10',
+          ocExpiration: '2026-12-05'
+        }
+      ],
+      activeVehicleId: 'veh_default_1',
+      entries: [
+        {
+          id: 'ent_1',
+          vehicleId: 'veh_default_1',
+          name: 'Wymiana paska rozrządu + pompa wody Conti',
+          cost: 1650,
+          mileage: 210000,
+          date: '2026-04-12',
+          category: 'Silnik',
+          notes: 'Kompletny zestaw rozrządu Continental'
+        }
+      ],
+      budgetItems: [],
+      googleWebhookUrl: DEFAULT_WEBHOOK_URL
+    };
+
+    let activeCategoryFilter = 'ALL';
+    let activeBudgetFilter = 'ALL';
+    let currentModule = 'garaz';
+
+    // --- DOM LOAD INIT ---
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDataFromStorage();
+      
+      // Set default form date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('partDate').value = today;
+      document.getElementById('budgetDueDate').value = today;
+
+      renderAll();
+
+      // Automatyczne pobranie najnowszych danych z Dysku Google przy otwarciu
+      fetchDataFromGoogleDrive();
+    });
+
+    // --- AUTOMATYCZNE ODSWIEŻANIE PRZY RUCHU / AKTYWNOŚCI UŻYTKOWNIKA ---
+    window.addEventListener('focus', () => {
+      fetchDataFromGoogleDrive();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        fetchDataFromGoogleDrive();
+      }
+    });
+
+    // --- TOGGLE COLLAPSIBLE FORMS ---
+    function toggleCollapsible(elementId, iconId) {
+      const el = document.getElementById(elementId);
+      const icon = document.getElementById(iconId);
+      
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        if (icon) {
+          icon.classList.remove('fa-circle-plus');
+          icon.classList.add('fa-circle-minus');
+        }
+      } else {
+        el.classList.add('hidden');
+        if (icon) {
+          icon.classList.remove('fa-circle-minus');
+          icon.classList.add('fa-circle-plus');
+        }
+      }
+    }
+
+    // --- SWITCH MODULES (GARAŻ / BUDŻET) ---
+    function switchModule(mod) {
+      currentModule = mod;
+      const garazDiv = document.getElementById('moduleGaraz');
+      const budzetDiv = document.getElementById('moduleBudzet');
+      const garazControls = document.getElementById('garazControls');
+      const btnG = document.getElementById('navGaraz');
+      const btnB = document.getElementById('navBudzet');
+
+      if (mod === 'garaz') {
+        garazDiv.classList.remove('hidden');
+        budzetDiv.classList.add('hidden');
+        garazControls.classList.remove('hidden');
+        btnG.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 shadow-md transition";
+        btnB.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+      } else {
+        garazDiv.classList.add('hidden');
+        budzetDiv.classList.remove('hidden');
+        garazControls.classList.add('hidden');
+        btnB.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950 shadow-md transition";
+        btnG.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+        renderBudget();
+      }
+    }
+
+    // --- LOCAL STORAGE & GOOGLE DRIVE AUTO-SYNC ---
+    function loadDataFromStorage() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          appData = JSON.parse(stored);
+        } catch (e) {
+          console.error("Błąd odczytu z localStorage:", e);
+        }
+      }
+
+      appData.googleWebhookUrl = DEFAULT_WEBHOOK_URL;
+      ensureValidDataStructure();
+    }
+
+    function ensureValidDataStructure() {
+      if (!appData.vehicles || appData.vehicles.length === 0) {
+        appData.vehicles = [{
+          id: 'veh_default_1',
+          name: 'Mój Pojazd',
+          plate: 'AB 12345',
+          year: '2018',
+          engine: '2.0 Benzyna',
+          fuel: 'Benzyna',
+          mileage: 150000,
+          lastInspection: '',
+          nextInspection: '',
+          ocExpiration: ''
+        }];
+        appData.activeVehicleId = 'veh_default_1';
+      }
+
+      if (!appData.entries) appData.entries = [];
+      if (!appData.budgetItems) appData.budgetItems = [];
+
+      if (!appData.vehicles.some(v => v.id === appData.activeVehicleId)) {
+        appData.activeVehicleId = appData.vehicles[0].id;
+      }
+    }
+
+    function saveDataToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+
+      // Wysyła dane na Dysk Google, a następnie wymusza ponowne pobranie
+      syncFullJsonToGoogleDrive().then(() => {
+        setTimeout(() => {
+          fetchDataFromGoogleDrive();
+        }, 800);
+      });
+    }
+
+    function syncFullJsonToGoogleDrive() {
+      const webhookUrl = appData.googleWebhookUrl || DEFAULT_WEBHOOK_URL;
+      if (!webhookUrl) return Promise.resolve();
+
+      return fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(appData, null, 2)
+      }).then(() => {
+        console.log("Zapisano/Nadpisano plik garaz_pro_db.json na Dysku Google");
+      }).catch(err => {
+        console.error("Błąd zapisu na Dysku Google:", err);
+      });
+    }
+
+    // --- POBIERANIE DANYCH Z DYSKU GOOGLE (Z OMIJANIEM CACHE) ---
+    function fetchDataFromGoogleDrive() {
+      const webhookUrl = appData.googleWebhookUrl || DEFAULT_WEBHOOK_URL;
+      if (!webhookUrl) return;
+
+      const urlWithCacheBuster = webhookUrl + (webhookUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+
+      fetch(urlWithCacheBuster, { cache: 'no-store' })
+        .then(res => res.json())
+        .then(remoteData => {
+          if (remoteData && remoteData.vehicles && remoteData.vehicles.length > 0) {
+            appData = remoteData;
+            appData.googleWebhookUrl = DEFAULT_WEBHOOK_URL;
+
+            ensureValidDataStructure();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            renderAll();
+            showToast("Zsynchronizowano z Dyskiem Google", "info");
+          }
+        })
+        .catch(err => {
+          console.log("Dane załadowane lokalnie (Brak połączenia lub odczytu z Dysku):", err);
+        });
+    }
+
+    // --- RENDER ALL UI COMPONENTS ---
+    function renderAll() {
+      renderVehicleSelector();
+      renderActiveVehicleDetails();
+      renderDocumentDates();
+      renderStats();
+      renderSmartAlert();
+      renderExpenseAnalytics();
+      renderHistory();
+      renderBudget();
+    }
+
+    // --- VEHICLE SELECTOR & DETAILS ---
+    function renderVehicleSelector() {
+      const select = document.getElementById('vehicleSelect');
+      select.innerHTML = '';
+      
+      appData.vehicles.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.id;
+        opt.textContent = `${v.name} (${v.plate || 'Brak tablic'})`;
+        if (v.id === appData.activeVehicleId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function switchVehicle(vehId) {
+      appData.activeVehicleId = vehId;
+      saveDataToStorage();
+      renderAll();
+      showToast("Przełączono pojazd", "info");
+    }
+
+    function getActiveVehicle() {
+      return appData.vehicles.find(v => v.id === appData.activeVehicleId) || appData.vehicles[0];
+    }
+
+    function renderActiveVehicleDetails() {
+      const current = getActiveVehicle();
+      document.getElementById('activeVehicleName').textContent = current.name;
+      document.getElementById('activeVehiclePlate').textContent = current.plate || 'BRAK NUMERU';
+      document.getElementById('activeVehicleEngine').textContent = current.engine || 'Silnik n/a';
+      document.getElementById('activeVehicleSub').textContent = `Rok prod.: ${current.year || 'b.d.'} | Paliwo: ${current.fuel || 'Benzyna'}`;
+    }
+
+    // --- DOCUMENT DATES & EXPIRATION CALCULATION ---
+    function calculateDaysLeft(dateStr) {
+      if (!dateStr) return null;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const target = new Date(dateStr);
+      target.setHours(0, 0, 0, 0);
+
+      const diffTime = target - today;
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function renderDocumentDates() {
+      const current = getActiveVehicle();
+
+      // Technical Inspection
+      const inspDays = calculateDaysLeft(current.nextInspection);
+      const inspText = document.getElementById('inspectionDateText');
+      const inspBadge = document.getElementById('inspectionBadge');
+      const inspSub = document.getElementById('inspectionSubText');
+
+      inspSub.textContent = `Ostatnie badanie: ${formatDatePl(current.lastInspection) || 'b.d.'}`;
+
+      if (inspDays === null) {
+        inspText.textContent = "Brak daty";
+        inspBadge.textContent = "BRAK DANYCH";
+        inspBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-400 border-slate-700";
+      } else if (inspDays < 0) {
+        inspText.textContent = formatDatePl(current.nextInspection);
+        inspBadge.textContent = `PO TERMINIE (${Math.abs(inspDays)} dni)`;
+        inspBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-red-500/20 text-red-400 border-red-500/30 animate-pulse";
+      } else if (inspDays <= 30) {
+        inspText.textContent = formatDatePl(current.nextInspection);
+        inspBadge.textContent = `WYGASA ZA ${inspDays} DNI`;
+        inspBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-amber-500/20 text-amber-400 border-amber-500/30";
+      } else {
+        inspText.textContent = formatDatePl(current.nextInspection);
+        inspBadge.textContent = `WAŻNE (${inspDays} dni)`;
+        inspBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+      }
+
+      // OC Insurance
+      const ocDays = calculateDaysLeft(current.ocExpiration);
+      const ocText = document.getElementById('ocDateText');
+      const ocBadge = document.getElementById('ocBadge');
+
+      if (ocDays === null) {
+        ocText.textContent = "Brak daty";
+        ocBadge.textContent = "BRAK DANYCH";
+        ocBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-400 border-slate-700";
+      } else if (ocDays < 0) {
+        ocText.textContent = formatDatePl(current.ocExpiration);
+        ocBadge.textContent = `EXPIRED (${Math.abs(ocDays)} dni temu)`;
+        ocBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-red-500/20 text-red-400 border-red-500/30 animate-pulse";
+      } else if (ocDays <= 30) {
+        ocText.textContent = formatDatePl(current.ocExpiration);
+        ocBadge.textContent = `WYGASA ZA ${ocDays} DNI`;
+        ocBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-amber-500/20 text-amber-400 border-amber-500/30";
+      } else {
+        ocText.textContent = formatDatePl(current.ocExpiration);
+        ocBadge.textContent = `WAŻNA (${ocDays} dni)`;
+        ocBadge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+      }
+    }
+
+    function promptUpdateMileage() {
+      const current = getActiveVehicle();
+      const val = prompt(`Podaj aktualny przebieg dla: ${current.name} (km)`, current.mileage || 0);
+      if (val !== null && !isNaN(val) && val.trim() !== '') {
+        const newKm = parseInt(val, 10);
+        current.mileage = newKm;
+        saveDataToStorage();
+        renderAll();
+        showToast(`Zaktualizowano przebieg do ${newKm.toLocaleString('pl-PL')} km`);
+      }
+    }
+
+    function deleteCurrentVehicle() {
+      if (appData.vehicles.length <= 1) {
+        alert("Nie możesz usunąć jedynego pojazdu!");
+        return;
+      }
+
+      const current = getActiveVehicle();
+      if (confirm(`Czy na pewno chcesz usunąć pojazd: "${current.name}" oraz wszystkie jego wpisy serwisowe?`)) {
+        appData.vehicles = appData.vehicles.filter(v => v.id !== current.id);
+        appData.entries = appData.entries.filter(e => e.vehicleId !== current.id);
+        appData.activeVehicleId = appData.vehicles[0].id;
+        saveDataToStorage();
+        renderAll();
+        showToast("Usunięto pojazd", "warning");
+      }
+    }
+
+    function handleAddVehicle(e) {
+      e.preventDefault();
+      const newVeh = {
+        id: 'veh_' + Date.now(),
+        name: document.getElementById('newVehicleName').value.trim(),
+        plate: document.getElementById('newVehiclePlate').value.trim().toUpperCase(),
+        year: document.getElementById('newVehicleYear').value.trim(),
+        engine: document.getElementById('newVehicleEngine').value.trim(),
+        fuel: document.getElementById('newVehicleFuel').value,
+        mileage: parseInt(document.getElementById('newVehicleMileage').value, 10) || 0,
+        lastInspection: document.getElementById('newVehicleLastInsp').value,
+        nextInspection: document.getElementById('newVehicleNextInsp').value,
+        ocExpiration: document.getElementById('newVehicleOC').value
+      };
+
+      appData.vehicles.push(newVeh);
+      appData.activeVehicleId = newVeh.id;
+      saveDataToStorage();
+      
+      toggleModal('addVehicleModal', false);
+      e.target.reset();
+      renderAll();
+      showToast(`Dodano pojazd: ${newVeh.name}`);
+    }
+
+    // --- EDIT VEHICLE DETAILS MODAL LOGIC ---
+    function openEditVehicleModal() {
+      const current = getActiveVehicle();
+      document.getElementById('editVehicleName').value = current.name || '';
+      document.getElementById('editVehiclePlate').value = current.plate || '';
+      document.getElementById('editVehicleYear').value = current.year || '';
+      document.getElementById('editVehicleEngine').value = current.engine || '';
+      document.getElementById('editVehicleFuel').value = current.fuel || 'Benzyna';
+      document.getElementById('editVehicleMileage').value = current.mileage || 0;
+      document.getElementById('editVehicleLastInsp').value = current.lastInspection || '';
+      document.getElementById('editVehicleNextInsp').value = current.nextInspection || '';
+      document.getElementById('editVehicleOC').value = current.ocExpiration || '';
+
+      toggleModal('editVehicleModal', true);
+    }
+
+    function handleEditVehicleSubmit(e) {
+      e.preventDefault();
+      const current = getActiveVehicle();
+
+      current.name = document.getElementById('editVehicleName').value.trim();
+      current.plate = document.getElementById('editVehiclePlate').value.trim().toUpperCase();
+      current.year = document.getElementById('editVehicleYear').value.trim();
+      current.engine = document.getElementById('editVehicleEngine').value.trim();
+      current.fuel = document.getElementById('editVehicleFuel').value;
+      current.mileage = parseInt(document.getElementById('editVehicleMileage').value, 10) || 0;
+      current.lastInspection = document.getElementById('editVehicleLastInsp').value;
+      current.nextInspection = document.getElementById('editVehicleNextInsp').value;
+      current.ocExpiration = document.getElementById('editVehicleOC').value;
+
+      saveDataToStorage();
+      toggleModal('editVehicleModal', false);
+      renderAll();
+      showToast("Zaktualizowano dane pojazdu!", "success");
+    }
+
+    // --- STATISTICS CALCULATION ---
+    function getActiveEntries() {
+      return appData.entries.filter(e => e.vehicleId === appData.activeVehicleId);
+    }
+
+    function renderStats() {
+      const activeVeh = getActiveVehicle();
+      const entries = getActiveEntries();
+
+      // Przebieg
+      let maxEntryMileage = entries.reduce((max, e) => Math.max(max, e.mileage || 0), 0);
+      let currentMileage = Math.max(activeVeh.mileage || 0, maxEntryMileage);
+      document.getElementById('statMileage').textContent = `${currentMileage.toLocaleString('pl-PL')} km`;
+
+      // Łączny Koszt
+      const totalCost = entries.reduce((sum, e) => sum + (parseFloat(e.cost) || 0), 0);
+      document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
+
+      // Liczba Serwisów
+      const count = entries.length;
+      document.getElementById('statServicesCount').textContent = count;
+      
+      const avg = count > 0 ? (totalCost / count) : 0;
+      document.getElementById('statAvgCost').textContent = `Średnio: ${avg.toFixed(0)} PLN / wpis`;
+
+      // Ostatnia Usługa
+      if (entries.length > 0) {
+        const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const last = sorted[0];
+        document.getElementById('statLastDate').textContent = formatDatePl(last.date);
+        document.getElementById('statLastPart').textContent = last.name;
+      } else {
+        document.getElementById('statLastDate').textContent = "Brak wpisów";
+        document.getElementById('statLastPart').textContent = "-";
+      }
+    }
+
+    // --- SMART SERVICE ALERT ---
+    function renderSmartAlert() {
+      const entries = getActiveEntries();
+      const activeVeh = getActiveVehicle();
+
+      const inspDays = calculateDaysLeft(activeVeh.nextInspection);
+      const ocDays = calculateDaysLeft(activeVeh.ocExpiration);
+
+      const alertBanner = document.getElementById('smartAlert');
+      const alertTitle = document.getElementById('alertTitle');
+      const alertDesc = document.getElementById('alertDesc');
+      const alertBadge = document.getElementById('alertBadge');
+
+      if (inspDays !== null && inspDays < 0) {
+        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-red-500 bg-red-500/10 flex items-center justify-between';
+        alertTitle.textContent = "Brak Ważnego Badania Technicznego!";
+        alertTitle.className = "text-sm font-bold text-red-400";
+        alertDesc.textContent = `Przegląd upłynął ${Math.abs(inspDays)} dni temu (${formatDatePl(activeVeh.nextInspection)}). Zrób badanie na stacji kontroli!`;
+        alertBadge.textContent = "KRYTYCZNE";
+        alertBadge.className = "text-[11px] font-semibold text-red-300 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30";
+        return;
+      }
+
+      if (ocDays !== null && ocDays < 0) {
+        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-red-500 bg-red-500/10 flex items-center justify-between';
+        alertTitle.textContent = "Brak Ważnej Polisy OC!";
+        alertTitle.className = "text-sm font-bold text-red-400";
+        alertDesc.textContent = `Ubezpieczenie upłynęło ${Math.abs(ocDays)} dni temu. Odnów polisę natychmiast!`;
+        alertBadge.textContent = "BRAK OC!";
+        alertBadge.className = "text-[11px] font-semibold text-red-300 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30";
+        return;
+      }
+
+      const oilEntries = entries.filter(e => 
+        e.category === 'Silnik' || e.name.toLowerCase().includes('olej')
+      ).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      if (oilEntries.length === 0) {
+        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-cyan-500 bg-cyan-500/5 flex items-center justify-between';
+        alertTitle.textContent = "Brak Danych o Wymianie Oleju";
+        alertTitle.className = "text-sm font-bold text-cyan-400";
+        alertDesc.textContent = "Dodaj pierwszą wymianę oleju, aby uruchomić inteligentne przypomnienia.";
+        alertBadge.textContent = "INFORMACJA";
+        alertBadge.className = "text-[11px] font-semibold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-500/30";
+        return;
+      }
+
+      const lastOil = oilEntries[0];
+      const kmSinceOil = (activeVeh.mileage || lastOil.mileage) - lastOil.mileage;
+
+      if (kmSinceOil >= 12000) {
+        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-red-500 bg-red-500/10 flex items-center justify-between';
+        alertTitle.textContent = "Zalecana Wymiana Oleju!";
+        alertTitle.className = "text-sm font-bold text-red-400";
+        alertDesc.textContent = `Od ostatniej wymiany minęło ${kmSinceOil.toLocaleString('pl-PL')} km (${lastOil.name}). Czas na serwis!`;
+        alertBadge.textContent = "SERWIS!";
+        alertBadge.className = "text-[11px] font-semibold text-red-300 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30";
+      } else if (kmSinceOil >= 9000) {
+        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-amber-500 bg-amber-500/10 flex items-center justify-between';
+        alertTitle.textContent = "Wkrótce Wymiana Oleju";
+        alertTitle.className = "text-sm font-bold text-amber-400";
+        alertDesc.textContent = `Przebieg od ostatniej wymiany oleju: ${kmSinceOil.toLocaleString('pl-PL')} km. Zaplanuj serwis.`;
+        alertBadge.textContent = "UWAGA";
+        alertBadge.className = "text-[11px] font-semibold text-amber-300 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30";
+      } else {
+        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-emerald-500 bg-emerald-500/10 flex items-center justify-between';
+        alertTitle.textContent = "Stan Serwisowy Optymalny";
+        alertTitle.className = "text-sm font-bold text-emerald-400";
+        alertDesc.textContent = `Olej wymieniony ${kmSinceOil.toLocaleString('pl-PL')} km temu (${formatDatePl(lastOil.date)}). Silnik pod opieką!`;
+        alertBadge.textContent = "DOBRY STAN";
+        alertBadge.className = "text-[11px] font-semibold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30";
+      }
+    }
+
+    // --- EXPENSE ANALYTICS (CATEGORY BREAKDOWN) ---
+    function renderExpenseAnalytics() {
+      const entries = getActiveEntries();
+      const container = document.getElementById('analyticsBars');
+      
+      if (entries.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Brak zarejestrowanych wydatków</p>`;
+        return;
+      }
+
+      const categoryTotals = {};
+      let grandTotal = 0;
+
+      entries.forEach(e => {
+        const cat = e.category || 'Inne';
+        const cost = parseFloat(e.cost) || 0;
+        categoryTotals[cat] = (categoryTotals[cat] || 0) + cost;
+        grandTotal += cost;
+      });
+
+      const categoriesConfig = {
+        'Silnik': { color: 'bg-amber-500', icon: 'fa-oil-can' },
+        'Hamulce': { color: 'bg-red-500', icon: 'fa-ban' },
+        'Zawieszenie': { color: 'bg-cyan-500', icon: 'fa-car-burst' },
+        'Elektryka': { color: 'bg-purple-500', icon: 'fa-bolt' },
+        'Opony': { color: 'bg-emerald-500', icon: 'fa-compact-disc' },
+        'Inne': { color: 'bg-slate-500', icon: 'fa-wrench' }
+      };
+
+      container.innerHTML = '';
+
+      Object.keys(categoryTotals).forEach(cat => {
+        const total = categoryTotals[cat];
+        const percent = grandTotal > 0 ? Math.round((total / grandTotal) * 100) : 0;
+        const config = categoriesConfig[cat] || categoriesConfig['Inne'];
+
+        const barHtml = `
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-300 font-medium flex items-center gap-1.5">
+                <i class="fa-solid ${config.icon} text-[10px] text-slate-400"></i> ${cat}
+              </span>
+              <span class="font-mono text-slate-400">${total.toLocaleString('pl-PL')} PLN <span class="text-slate-500">(${percent}%)</span></span>
+            </div>
+            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full ${config.color} rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', barHtml);
+      });
+    }
+
+    // --- FORM SUBMISSION (ADD NEW ENTRY) ---
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const activeVeh = getActiveVehicle();
+      const newMileage = parseInt(document.getElementById('partMileage').value, 10);
+
+      const entry = {
+        id: 'ent_' + Date.now(),
+        vehicleId: appData.activeVehicleId,
+        name: document.getElementById('partName').value.trim(),
+        cost: parseFloat(document.getElementById('partCost').value) || 0,
+        mileage: newMileage,
+        date: document.getElementById('partDate').value,
+        category: document.getElementById('partCategory').value,
+        notes: document.getElementById('partNotes').value.trim()
+      };
+
+      appData.entries.unshift(entry);
+
+      if (newMileage > (activeVeh.mileage || 0)) {
+        activeVeh.mileage = newMileage;
+      }
+
+      saveDataToStorage();
+
+      document.getElementById('serviceForm').reset();
+      document.getElementById('partDate').value = new Date().toISOString().split('T')[0];
+
+      renderAll();
+      showToast("Dodano wpis serwisowy!");
+    }
+
+    // --- EDIT SERVICE ENTRY LOGIC ---
+    function openEditModal(entryId) {
+      const entry = appData.entries.find(e => e.id === entryId);
+      if (!entry) return;
+
+      document.getElementById('editEntryId').value = entry.id;
+      document.getElementById('editPartName').value = entry.name;
+      document.getElementById('editPartCost').value = entry.cost;
+      document.getElementById('editPartMileage').value = entry.mileage;
+      document.getElementById('editPartDate').value = entry.date;
+      document.getElementById('editPartCategory').value = entry.category || 'Inne';
+      document.getElementById('editPartNotes').value = entry.notes || '';
+
+      toggleModal('editEntryModal', true);
+    }
+
+    function handleEditEntrySubmit(e) {
+      e.preventDefault();
+
+      const entryId = document.getElementById('editEntryId').value;
+      const entryIndex = appData.entries.findIndex(e => e.id === entryId);
+
+      if (entryIndex === -1) return;
+
+      const newMileage = parseInt(document.getElementById('editPartMileage').value, 10);
+
+      appData.entries[entryIndex] = {
+        ...appData.entries[entryIndex],
+        name: document.getElementById('editPartName').value.trim(),
+        cost: parseFloat(document.getElementById('editPartCost').value) || 0,
+        mileage: newMileage,
+        date: document.getElementById('editPartDate').value,
+        category: document.getElementById('editPartCategory').value,
+        notes: document.getElementById('editPartNotes').value.trim()
+      };
+
+      const activeVeh = getActiveVehicle();
+      if (newMileage > (activeVeh.mileage || 0)) {
+        activeVeh.mileage = newMileage;
+      }
+
+      saveDataToStorage();
+      toggleModal('editEntryModal', false);
+      renderAll();
+      showToast("Zaktualizowano wpis serwisowy!", "success");
+    }
+
+    function deleteEntry(entryId) {
+      if (confirm("Czy na pewno chcesz usunąć ten wpis?")) {
+        appData.entries = appData.entries.filter(e => e.id !== entryId);
+        saveDataToStorage();
+        renderAll();
+        showToast("Usunięto wpis", "warning");
+      }
+    }
+
+    // --- FILTER & SEARCH & HISTORY RENDER ---
+    function setCategoryFilter(category) {
+      activeCategoryFilter = category;
+      
+      const pills = document.querySelectorAll('#categoryPills button');
+      pills.forEach(btn => {
+        if (btn.textContent.includes(category) || (category === 'ALL' && btn.textContent === 'Wszystkie')) {
+          btn.className = "pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400";
+        } else {
+          btn.className = "pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+        }
+      });
+
+      renderHistory();
+    }
+
+    function formatWpisyCount(count) {
+      if (count === 1) return '1 wpis';
+      const mod10 = count % 10;
+      const mod100 = count % 100;
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) {
+        return `${count} wpisy`;
+      }
+      return `${count} wpisów`;
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('historyContainer');
+      const emptyState = document.getElementById('emptyState');
+      const recordBadge = document.getElementById('recordBadge');
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      let filtered = getActiveEntries();
+
+      if (activeCategoryFilter !== 'ALL') {
+        filtered = filtered.filter(e => e.category === activeCategoryFilter);
+      }
+
+      if (searchQuery !== '') {
+        filtered = filtered.filter(e => 
+          e.name.toLowerCase().includes(searchQuery) || 
+          (e.notes && e.notes.toLowerCase().includes(searchQuery)) ||
+          e.cost.toString().includes(searchQuery) ||
+          e.mileage.toString().includes(searchQuery)
+        );
+      }
+
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      recordBadge.textContent = formatWpisyCount(filtered.length);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = '';
+
+      const categoryIcons = {
+        'Silnik': 'fa-oil-can text-amber-400 bg-amber-500/10 border-amber-500/20',
+        'Hamulce': 'fa-ban text-red-400 bg-red-500/10 border-red-500/20',
+        'Zawieszenie': 'fa-car-burst text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+        'Elektryka': 'fa-bolt text-purple-400 bg-purple-500/10 border-purple-500/20',
+        'Opony': 'fa-compact-disc text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+        'Inne': 'fa-wrench text-slate-400 bg-slate-500/10 border-slate-500/20'
+      };
+
+      filtered.forEach(item => {
+        const iconClass = categoryIcons[item.category] || categoryIcons['Inne'];
+        
+        const row = document.createElement('div');
+        row.className = 'entry-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+        
+        row.innerHTML = `
+          <div class="flex items-start space-x-3.5 flex-1 min-w-0">
+            <div class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 mt-0.5 ${iconClass}">
+              <i class="fa-solid ${iconClass.split(' ')[0]}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.category || 'Inne'}</span>
+              </div>
+              
+              ${item.notes ? `<p class="text-xs text-slate-400 mt-0.5 truncate"><i class="fa-regular fa-note-sticky text-[10px] mr-1"></i>${escapeHtml(item.notes)}</p>` : ''}
+              
+              <div class="flex items-center space-x-4 text-xs text-slate-400 mt-1.5 font-mono">
+                <span><i class="fa-regular fa-calendar text-slate-500 mr-1"></i>${formatDatePl(item.date)}</span>
+                <span><i class="fa-solid fa-gauge-simple text-slate-500 mr-1"></i>${item.mileage.toLocaleString('pl-PL')} km</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
+            <div class="text-right">
+              <span class="text-base font-black text-cyan-400">${parseFloat(item.cost).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN</span>
+            </div>
+
+            <div class="flex items-center space-x-1">
+              <button onclick="openEditModal('${item.id}')" title="Edytuj wpis" class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded-lg transition">
+                <i class="fa-solid fa-pen-to-square text-sm"></i>
+              </button>
+              <button onclick="deleteEntry('${item.id}')" title="Usuń wpis" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition">
+                <i class="fa-solid fa-trash-can text-sm"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        container.appendChild(row);
+      });
+    }
+
+    // --- LOGIKA MODUŁU BUDŻETOWEGO ---
+    function handleBudgetSubmit(e) {
+      e.preventDefault();
+
+      const item = {
+        id: 'bud_' + Date.now(),
+        type: document.getElementById('budgetType').value,
+        name: document.getElementById('budgetName').value.trim(),
+        amount: parseFloat(document.getElementById('budgetAmount').value) || 0,
+        dueDate: document.getElementById('budgetDueDate').value,
+        isPaid: document.getElementById('budgetPaidStatus').value === 'PAID',
+        notes: document.getElementById('budgetNotes').value.trim()
+      };
+
+      appData.budgetItems.unshift(item);
+      saveDataToStorage();
+
+      document.getElementById('budgetForm').reset();
+      document.getElementById('budgetDueDate').value = new Date().toISOString().split('T')[0];
+
+      renderBudget();
+      showToast("Dodano pozycję budżetową!");
+    }
+
+    function toggleBudgetPaid(id) {
+      const item = appData.budgetItems.find(b => b.id === id);
+      if (item) {
+        item.isPaid = !item.isPaid;
+        saveDataToStorage();
+        renderBudget();
+        showToast(item.isPaid ? "Oznaczono jako opłacone" : "Status zaktualizowany", "info");
+      }
+    }
+
+    function deleteBudgetItem(id) {
+      if (confirm("Czy na pewno chcesz usunąć tę pozycję z budżetu?")) {
+        appData.budgetItems = appData.budgetItems.filter(b => b.id !== id);
+        saveDataToStorage();
+        renderBudget();
+        showToast("Usunięto pozycję z budżetu", "warning");
+      }
+    }
+
+    function setBudgetFilter(filter) {
+      activeBudgetFilter = filter;
+      const bAll = document.getElementById('bFilterAll');
+      const bUnpaid = document.getElementById('bFilterUnpaid');
+      const bPaid = document.getElementById('bFilterPaid');
+
+      bAll.className = filter === 'ALL' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+      bUnpaid.className = filter === 'UNPAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+      bPaid.className = filter === 'PAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+
+      renderBudget();
+    }
+
+    function renderBudget() {
+      const items = appData.budgetItems || [];
+
+      let income = 0;
+      let loans = 0;
+      let fixed = 0;
+      let paidCount = 0;
+
+      items.forEach(i => {
+        const amt = parseFloat(i.amount) || 0;
+        if (i.type === 'Przychód') income += amt;
+        else if (i.type === 'Rata') loans += amt;
+        else fixed += amt;
+
+        if (i.isPaid) paidCount++;
+      });
+
+      const net = income - (loans + fixed);
+
+      document.getElementById('budgetIncomeTotal').textContent = `${income.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
+      document.getElementById('budgetLoansTotal').textContent = `${loans.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
+      document.getElementById('budgetFixedTotal').textContent = `${fixed.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
+      document.getElementById('budgetNetTotal').textContent = `${net.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
+
+      document.getElementById('paidProgressBadge').textContent = `Opłacono: ${paidCount}/${items.length}`;
+      document.getElementById('budgetCountBadge').textContent = `${items.length} pozycji`;
+
+      let filtered = items;
+      if (activeBudgetFilter === 'PAID') filtered = items.filter(i => i.isPaid);
+      else if (activeBudgetFilter === 'UNPAID') filtered = items.filter(i => !i.isPaid);
+
+      const container = document.getElementById('budgetContainer');
+      const emptyState = document.getElementById('budgetEmptyState');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = '';
+
+      filtered.forEach(item => {
+        const isIncome = item.type === 'Przychód';
+        const colorClass = isIncome ? 'text-emerald-400' : (item.type === 'Rata' ? 'text-amber-400' : 'text-rose-400');
+        
+        const row = document.createElement('div');
+        row.className = 'entry-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+
+        row.innerHTML = `
+          <div class="flex items-center space-x-3.5 flex-1 min-w-0">
+            <button onclick="toggleBudgetPaid('${item.id}')" title="Zmień status opłacenia" class="w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-500 border-slate-700 hover:text-white'}">
+              <i class="fa-solid ${item.isPaid ? 'fa-check' : 'fa-clock'} text-sm"></i>
+            </button>
+
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.type}</span>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${item.isPaid ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${item.isPaid ? 'Opłacone' : 'Do zapłaty'}</span>
+              </div>
+
+              ${item.notes ? `<p class="text-xs text-slate-400 mt-0.5 truncate"><i class="fa-regular fa-note-sticky text-[10px] mr-1"></i>${escapeHtml(item.notes)}</p>` : ''}
+
+              <p class="text-xs text-slate-400 mt-1 font-mono">
+                <i class="fa-regular fa-calendar text-slate-500 mr-1"></i>Termin: ${formatDatePl(item.dueDate)}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
+            <span class="text-base font-black ${colorClass}">${isIncome ? '+' : '-'}${parseFloat(item.amount).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN</span>
+            <button onclick="deleteBudgetItem('${item.id}')" title="Usuń pozycję" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    // --- EXPORT & IMPORT BACKUP (JSON) ---
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().split('T')[0];
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `GarazPro_Kopia_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Pobrano kopię zapasową JSON");
+    }
+
+    function triggerImport() {
+      document.getElementById('importFile').click();
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.vehicles && imported.entries) {
+            appData = imported;
+            saveDataToStorage();
+            renderAll();
+            showToast("Pomyślnie zaimportowano dane!");
+          } else {
+            alert("Niepoprawny format pliku kopii zapasowej.");
+          }
+        } catch (err) {
+          alert("Błąd odczytu pliku JSON: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // --- UTILITIES & HELPERS ---
+    function toggleModal(modalId, show) {
+      const modal = document.getElementById(modalId);
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function formatDatePl(dateString) {
+      if (!dateString) return '';
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}.${parts[1]}.${parts[0]}`;
+      }
+      return dateString;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const colors = {
+        success: 'bg-emerald-500 text-slate-950',
+        warning: 'bg-amber-500 text-slate-950',
+        info: 'bg-cyan-500 text-slate-950'
+      };
+
+      toast.className = `${colors[type] || colors.success} font-bold text-xs px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 transform translate-y-2 opacity-0 flex items-center space-x-2 pointer-events-auto`;
+      toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${message}</span>`;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -462,6 +462,57 @@
     </div>
   </div>
 
+  <!-- EDIT ENTRY MODAL -->
+  <div id="editEntryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
+      <button onclick="toggleModal('editEntryModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      <h3 class="text-lg font-bold text-white">Edytuj Wpis Serwisowy</h3>
+      <form id="editEntryForm" onsubmit="handleEditEntrySubmit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editEntryId">
+        <div>
+          <label class="block text-slate-300 mb-1">Nazwa części / Naprawy *</label>
+          <input type="text" id="editPartName" required class="glass-input w-full px-3 py-2 rounded-xl">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">Koszt (PLN) *</label>
+            <input type="number" id="editPartCost" step="0.01" min="0" required class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Przebieg (km) *</label>
+            <input type="number" id="editPartMileage" min="0" required class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">Data *</label>
+            <input type="date" id="editPartDate" required class="glass-input w-full px-3 py-2 rounded-xl">
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Kategoria</label>
+            <select id="editPartCategory" class="glass-input w-full px-3 py-2 rounded-xl">
+              <option value="Silnik">Silnik / Oleje</option>
+              <option value="Hamulce">Układ Hamulcowy</option>
+              <option value="Zawieszenie">Zawieszenie / Kier.</option>
+              <option value="Elektryka">Elektryka / Klimatyzacja</option>
+              <option value="Opony">Opony / Koła</option>
+              <option value="Inne">Inne / Akcesoria</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Uwagi</label>
+          <textarea id="editPartNotes" rows="2" class="glass-input w-full px-3 py-2 rounded-xl resize-none"></textarea>
+        </div>
+        <div class="flex items-center space-x-2 pt-1">
+          <input type="checkbox" id="editPartIncludeInSum" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 cursor-pointer">
+          <label for="editPartIncludeInSum" class="text-xs font-medium text-slate-300 cursor-pointer select-none">Uwzględniaj w sumie wydatków</label>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-cyan-500 text-slate-950 font-bold rounded-xl transition shadow-lg">Zapisz Zmiany</button>
+      </form>
+    </div>
+  </div>
+
   <!-- SCRIPT SUPABASE -->
   <script>
     const SUPABASE_URL = 'https://kopwsxkfscnhaoocdxzk.supabase.co';
@@ -683,6 +734,49 @@
       renderAll();
     }
 
+    function openEditEntryModal(id) {
+      const entry = appData.entries.find(e => e.id === id);
+      if (!entry) return;
+
+      document.getElementById('editEntryId').value = entry.id;
+      document.getElementById('editPartName').value = entry.name || '';
+      document.getElementById('editPartCost').value = entry.cost || 0;
+      document.getElementById('editPartMileage').value = entry.mileage || 0;
+      document.getElementById('editPartDate').value = entry.date || new Date().toISOString().split('T')[0];
+      document.getElementById('editPartCategory').value = entry.category || 'Inne';
+      document.getElementById('editPartNotes').value = entry.notes || '';
+      document.getElementById('editPartIncludeInSum').checked = entry.include_in_sum !== false;
+
+      toggleModal('editEntryModal', true);
+    }
+
+    async function handleEditEntrySubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('editEntryId').value;
+      const entry = appData.entries.find(item => item.id === id);
+      if (!entry) return;
+
+      const updatedData = {
+        name: document.getElementById('editPartName').value.trim(),
+        cost: parseFloat(document.getElementById('editPartCost').value) || 0,
+        mileage: parseInt(document.getElementById('editPartMileage').value, 10) || 0,
+        date: document.getElementById('editPartDate').value,
+        category: document.getElementById('editPartCategory').value,
+        notes: document.getElementById('editPartNotes').value.trim(),
+        include_in_sum: document.getElementById('editPartIncludeInSum').checked
+      };
+
+      const { error } = await supabaseClient.from('service_entries').update(updatedData).eq('id', id);
+      if (error) {
+        alert("Błąd aktualizacji w Supabase: " + error.message);
+        return;
+      }
+
+      Object.assign(entry, updatedData);
+      toggleModal('editEntryModal', false);
+      renderAll();
+    }
+
     async function deleteEntry(id) {
       if (!confirm("Usunąć wpis z bazy?")) return;
       await supabaseClient.from('service_entries').delete().eq('id', id);
@@ -791,7 +885,10 @@
             </div>
             <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
               <span class="text-base font-black ${isExcluded ? 'text-slate-400 line-through' : 'text-cyan-400'}">${parseFloat(item.cost).toLocaleString('pl-PL')} PLN</span>
-              <button onclick="deleteEntry('${item.id}')" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-trash-can text-sm"></i></button>
+              <div class="flex items-center gap-1">
+                <button onclick="openEditEntryModal('${item.id}')" class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded-lg transition" title="Edytuj wpis"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
+                <button onclick="deleteEntry('${item.id}')" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition" title="Usuń wpis"><i class="fa-solid fa-trash-can text-sm"></i></button>
+              </div>
             </div>
           </div>
         `);

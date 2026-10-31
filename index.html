@@ -109,7 +109,6 @@
   <header class="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
       
-      <!-- Logo & Title & Moduły -->
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-amber-500 p-0.5 shadow-lg shadow-cyan-500/10">
@@ -126,7 +125,6 @@
           </div>
         </div>
 
-        <!-- Przełącznik Modułów Garaż / Budżet -->
         <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
           <button onclick="switchModule('garaz')" id="navGaraz" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 shadow-md transition">
             <i class="fa-solid fa-car mr-1.5"></i> Garaż
@@ -143,7 +141,6 @@
         </div>
       </div>
 
-      <!-- Vehicle Switcher & Actions -->
       <div id="garazControls" class="flex items-center space-x-3 w-full md:w-auto">
         <div class="relative flex-1 md:w-64">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -186,9 +183,6 @@
         </div>
 
         <div class="flex items-center space-x-2 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-800 flex-wrap gap-y-2">
-          <button onclick="openEditVehicleModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
-            <i class="fa-solid fa-pen-to-square text-cyan-400"></i> Edytuj Pojazd
-          </button>
           <button onclick="promptUpdateMileage()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-cyan-400 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
             <i class="fa-solid fa-gauge"></i> Aktualizuj Przebieg
           </button>
@@ -196,61 +190,6 @@
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
-      </div>
-
-      <!-- DOCUMENT DATES -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div id="inspectionCard" class="glass-panel p-4 rounded-2xl border flex items-center justify-between relative overflow-hidden">
-          <div class="flex items-center space-x-3.5">
-            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg shrink-0">
-              <i class="fa-solid fa-clipboard-check"></i>
-            </div>
-            <div>
-              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Przegląd Techniczny Badanie</p>
-              <div class="flex items-center gap-2 mt-0.5">
-                <h4 id="inspectionDateText" class="text-base font-bold text-white">Brak daty</h4>
-                <span id="inspectionBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-400 border-slate-700">BRAK DANYCH</span>
-              </div>
-              <p id="inspectionSubText" class="text-[11px] text-slate-400 mt-0.5">Ostatnie badanie: b.d.</p>
-            </div>
-          </div>
-          <button onclick="openEditVehicleModal()" class="p-2 text-slate-400 hover:text-white text-xs bg-slate-800/80 hover:bg-slate-700 rounded-lg border border-slate-700 transition" title="Zmień datę">
-            <i class="fa-solid fa-calendar-days"></i>
-          </button>
-        </div>
-
-        <div id="ocCard" class="glass-panel p-4 rounded-2xl border flex items-center justify-between relative overflow-hidden">
-          <div class="flex items-center space-x-3.5">
-            <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg shrink-0">
-              <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <div>
-              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Ubezpieczenie OC Ważne Do</p>
-              <div class="flex items-center gap-2 mt-0.5">
-                <h4 id="ocDateText" class="text-base font-bold text-white">Brak daty</h4>
-                <span id="ocBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-400 border-slate-700">BRAK DANYCH</span>
-              </div>
-              <p id="ocSubText" class="text-[11px] text-slate-400 mt-0.5">Polisa OC</p>
-            </div>
-          </div>
-          <button onclick="openEditVehicleModal()" class="p-2 text-slate-400 hover:text-white text-xs bg-slate-800/80 hover:bg-slate-700 rounded-lg border border-slate-700 transition" title="Zmień datę">
-            <i class="fa-solid fa-calendar-days"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- SMART ALERT -->
-      <div id="smartAlert" class="glass-panel p-4 rounded-2xl border-l-4 border-l-cyan-500 bg-cyan-500/5 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl shrink-0">
-            <i class="fa-solid fa-bell-concierge text-lg"></i>
-          </div>
-          <div>
-            <h4 id="alertTitle" class="text-sm font-bold text-cyan-400">Analiza Stanu</h4>
-            <p id="alertDesc" class="text-xs text-slate-300">Pobieranie danych z Supabase...</p>
-          </div>
-        </div>
-        <span id="alertBadge" class="text-[11px] font-semibold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-500/30">SYNC</span>
       </div>
 
       <!-- STATS -->
@@ -363,14 +302,15 @@
               </div>
             </div>
 
+            <!-- KATEGORIE -->
             <div class="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1 scrollbar-none" id="categoryPills">
               <button onclick="setCategoryFilter('ALL')" class="pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400">Wszystkie</button>
-              <button onclick="setCategoryFilter('Silnik')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">Silnik</button>
-              <button onclick="setCategoryFilter('Hamulce')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">Hamulce</button>
-              <button onclick="setCategoryFilter('Zawieszenie')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">Zawieszenie</button>
-              <button onclick="setCategoryFilter('Elektryka')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">Elektryka</button>
-              <button onclick="setCategoryFilter('Opony')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">Opony</button>
-              <button onclick="setCategoryFilter('Inne')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">Inne</button>
+              <button onclick="setCategoryFilter('Silnik')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Silnik</button>
+              <button onclick="setCategoryFilter('Hamulce')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Hamulce</button>
+              <button onclick="setCategoryFilter('Zawieszenie')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Zawieszenie</button>
+              <button onclick="setCategoryFilter('Elektryka')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Elektryka</button>
+              <button onclick="setCategoryFilter('Opony')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Opony</button>
+              <button onclick="setCategoryFilter('Inne')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Inne</button>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-xs">
@@ -628,8 +568,10 @@
     function renderDocumentDates() {
       const v = getActiveVehicle();
       if (!v) return;
-      document.getElementById('inspectionDateText').textContent = v.next_inspection || 'Brak daty';
-      document.getElementById('ocDateText').textContent = v.oc_expiration || 'Brak daty';
+      const inspEl = document.getElementById('inspectionDateText');
+      const ocEl = document.getElementById('ocDateText');
+      if (inspEl) inspEl.textContent = v.next_inspection || 'Brak daty';
+      if (ocEl) ocEl.textContent = v.oc_expiration || 'Brak daty';
     }
 
     function getActiveEntries() {
@@ -651,27 +593,72 @@
         const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
         document.getElementById('statLastDate').textContent = sorted[0].date;
         document.getElementById('statLastPart').textContent = sorted[0].name;
+      } else {
+        document.getElementById('statLastDate').textContent = "Brak wpisów";
+        document.getElementById('statLastPart').textContent = "-";
       }
     }
 
     function renderExpenseAnalytics() {
       const entries = getActiveEntries().filter(e => e.include_in_sum !== false);
       const container = document.getElementById('analyticsBars');
+      if (!container) return;
+      
       if (entries.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 text-center">Brak wydatków</p>`;
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Brak wydatków</p>`;
         return;
       }
-      container.innerHTML = `<p class="text-xs text-slate-400">Wpisów w bazie: ${entries.length}</p>`;
+
+      const categoryTotals = {};
+      let grandTotal = 0;
+      entries.forEach(e => {
+        const cat = e.category || 'Inne';
+        const cost = parseFloat(e.cost) || 0;
+        categoryTotals[cat] = (categoryTotals[cat] || 0) + cost;
+        grandTotal += cost;
+      });
+
+      const categoriesConfig = {
+        'Silnik': { color: 'bg-amber-500', icon: 'fa-oil-can' },
+        'Hamulce': { color: 'bg-red-500', icon: 'fa-ban' },
+        'Zawieszenie': { color: 'bg-cyan-500', icon: 'fa-car-burst' },
+        'Elektryka': { color: 'bg-purple-500', icon: 'fa-bolt' },
+        'Opony': { color: 'bg-emerald-500', icon: 'fa-compact-disc' },
+        'Inne': { color: 'bg-slate-500', icon: 'fa-wrench' }
+      };
+
+      container.innerHTML = '';
+      Object.keys(categoryTotals).forEach(cat => {
+        const total = categoryTotals[cat];
+        const percent = grandTotal > 0 ? Math.round((total / grandTotal) * 100) : 0;
+        const config = categoriesConfig[cat] || categoriesConfig['Inne'];
+        container.insertAdjacentHTML('beforeend', `
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-300 font-medium flex items-center gap-1.5">
+                <i class="fa-solid ${config.icon} text-[10px] text-slate-400"></i> ${cat}
+              </span>
+              <span class="font-mono text-slate-400">${total.toLocaleString('pl-PL')} PLN <span class="text-slate-500">(${percent}%)</span></span>
+            </div>
+            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full ${config.color} rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+            </div>
+          </div>
+        `);
+      });
     }
 
     async function handleFormSubmit(e) {
       e.preventDefault();
+      const activeVeh = getActiveVehicle();
+      const newMileage = parseInt(document.getElementById('partMileage').value, 10);
+
       const newEntry = {
         id: 'ent_' + Date.now(),
         vehicle_id: appData.activeVehicleId,
         name: document.getElementById('partName').value.trim(),
         cost: parseFloat(document.getElementById('partCost').value) || 0,
-        mileage: parseInt(document.getElementById('partMileage').value, 10) || 0,
+        mileage: newMileage,
         date: document.getElementById('partDate').value,
         category: document.getElementById('partCategory').value,
         notes: document.getElementById('partNotes').value.trim(),
@@ -685,8 +672,14 @@
       }
 
       appData.entries.unshift(newEntry);
+      if (newMileage > (activeVeh.mileage || 0)) {
+        activeVeh.mileage = newMileage;
+        await supabaseClient.from('vehicles').update({ mileage: newMileage }).eq('id', activeVeh.id);
+      }
+
       document.getElementById('serviceForm').reset();
       document.getElementById('partDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('partIncludeInSum').checked = true;
       renderAll();
     }
 
@@ -697,27 +690,108 @@
       renderAll();
     }
 
+    function setCategoryFilter(category) {
+      activeCategoryFilter = category;
+      document.querySelectorAll('#categoryPills button').forEach(btn => {
+        if (btn.textContent.includes(category) || (category === 'ALL' && btn.textContent === 'Wszystkie')) {
+          btn.className = "pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400";
+        } else {
+          btn.className = "pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+        }
+      });
+      renderHistory();
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterDateFrom').value = '';
+      document.getElementById('filterDateTo').value = '';
+      document.getElementById('filterSortOrder').value = 'dateDesc';
+      setCategoryFilter('ALL');
+    }
+
     function renderHistory() {
       const container = document.getElementById('historyContainer');
-      const entries = getActiveEntries();
-      document.getElementById('recordBadge').textContent = `${entries.length} wpisów`;
+      const emptyState = document.getElementById('emptyState');
+      const recordBadge = document.getElementById('recordBadge');
+      
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      const dateFrom = document.getElementById('filterDateFrom').value;
+      const dateTo = document.getElementById('filterDateTo').value;
+      const sortOrder = document.getElementById('filterSortOrder').value;
 
-      if (entries.length === 0) {
-        container.innerHTML = `<p class="p-6 text-center text-slate-500 text-xs">Brak wpisów.</p>`;
+      let filtered = getActiveEntries();
+
+      if (activeCategoryFilter !== 'ALL') {
+        filtered = filtered.filter(e => e.category === activeCategoryFilter);
+      }
+
+      if (searchQuery !== '') {
+        filtered = filtered.filter(e => 
+          e.name.toLowerCase().includes(searchQuery) || 
+          (e.notes && e.notes.toLowerCase().includes(searchQuery)) ||
+          e.cost.toString().includes(searchQuery) ||
+          e.mileage.toString().includes(searchQuery)
+        );
+      }
+
+      if (dateFrom) filtered = filtered.filter(e => e.date >= dateFrom);
+      if (dateTo) filtered = filtered.filter(e => e.date <= dateTo);
+
+      filtered.sort((a, b) => {
+        if (sortOrder === 'dateDesc') return new Date(b.date) - new Date(a.date);
+        if (sortOrder === 'dateAsc') return new Date(a.date) - new Date(b.date);
+        if (sortOrder === 'costDesc') return (parseFloat(b.cost) || 0) - (parseFloat(a.cost) || 0);
+        if (sortOrder === 'costAsc') return (parseFloat(a.cost) || 0) - (parseFloat(b.cost) || 0);
+        return 0;
+      });
+
+      recordBadge.textContent = `${filtered.length} wpisów`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
         return;
       }
 
+      emptyState.classList.add('hidden');
       container.innerHTML = '';
-      entries.forEach(item => {
+
+      const categoryIcons = {
+        'Silnik': 'fa-oil-can text-amber-400 bg-amber-500/10 border-amber-500/20',
+        'Hamulce': 'fa-ban text-red-400 bg-red-500/10 border-red-500/20',
+        'Zawieszenie': 'fa-car-burst text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+        'Elektryka': 'fa-bolt text-purple-400 bg-purple-500/10 border-purple-500/20',
+        'Opony': 'fa-compact-disc text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+        'Inne': 'fa-wrench text-slate-400 bg-slate-500/10 border-slate-500/20'
+      };
+
+      filtered.forEach(item => {
+        const iconClass = categoryIcons[item.category] || categoryIcons['Inne'];
+        const isExcluded = item.include_in_sum === false;
+        
         container.insertAdjacentHTML('beforeend', `
-          <div class="p-4 flex items-center justify-between gap-3 text-xs">
-            <div>
-              <h4 class="font-bold text-white">${escapeHtml(item.name)}</h4>
-              <p class="text-slate-400">${item.date} | ${item.mileage} km | ${item.category || 'Inne'}</p>
+          <div class="entry-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div class="flex items-start space-x-3.5 flex-1 min-w-0">
+              <div class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 mt-0.5 ${iconClass}">
+                <i class="fa-solid ${iconClass.split(' ')[0]}"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
+                  <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.category || 'Inne'}</span>
+                  ${isExcluded ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700"><i class="fa-solid fa-eye-slash text-[9px] mr-1"></i>Pomijany</span>` : ''}
+                </div>
+                ${item.notes ? `<p class="text-xs text-slate-400 mt-0.5 truncate"><i class="fa-regular fa-note-sticky text-[10px] mr-1"></i>${escapeHtml(item.notes)}</p>` : ''}
+                <div class="flex items-center space-x-4 text-xs text-slate-400 mt-1.5 font-mono">
+                  <span><i class="fa-regular fa-calendar text-slate-500 mr-1"></i>${item.date}</span>
+                  <span><i class="fa-solid fa-gauge-simple text-slate-500 mr-1"></i>${(item.mileage || 0).toLocaleString('pl-PL')} km</span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="font-black text-cyan-400">${item.cost} PLN</span>
-              <button onclick="deleteEntry('${item.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash-can"></i></button>
+            <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
+              <span class="text-base font-black ${isExcluded ? 'text-slate-400 line-through' : 'text-cyan-400'}">${parseFloat(item.cost).toLocaleString('pl-PL')} PLN</span>
+              <button onclick="deleteEntry('${item.id}')" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-trash-can text-sm"></i></button>
             </div>
           </div>
         `);
@@ -740,6 +814,7 @@
       await supabaseClient.from('budget_items').insert([item]);
       appData.budgetItems.unshift(item);
       document.getElementById('budgetForm').reset();
+      document.getElementById('budgetDueDate').value = new Date().toISOString().split('T')[0];
       renderBudget();
     }
 
@@ -757,6 +832,14 @@
       renderBudget();
     }
 
+    function setBudgetFilter(filter) {
+      activeBudgetFilter = filter;
+      document.getElementById('bFilterAll').className = filter === 'ALL' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300";
+      document.getElementById('bFilterUnpaid').className = filter === 'UNPAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300";
+      document.getElementById('bFilterPaid').className = filter === 'PAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300";
+      renderBudget();
+    }
+
     function renderBudget() {
       const items = appData.budgetItems || [];
       let income = 0, loans = 0, fixed = 0, paidCount = 0;
@@ -769,21 +852,27 @@
         if (i.is_paid) paidCount++;
       });
 
-      document.getElementById('budgetIncomeTotal').textContent = `${income.toLocaleString()} PLN`;
-      document.getElementById('budgetLoansTotal').textContent = `${loans.toLocaleString()} PLN`;
-      document.getElementById('budgetFixedTotal').textContent = `${fixed.toLocaleString()} PLN`;
-      document.getElementById('budgetNetTotal').textContent = `${(income - (loans + fixed)).toLocaleString()} PLN`;
+      document.getElementById('budgetIncomeTotal').textContent = `${income.toLocaleString('pl-PL')} PLN`;
+      document.getElementById('budgetLoansTotal').textContent = `${loans.toLocaleString('pl-PL')} PLN`;
+      document.getElementById('budgetFixedTotal').textContent = `${fixed.toLocaleString('pl-PL')} PLN`;
+      document.getElementById('budgetNetTotal').textContent = `${(income - (loans + fixed)).toLocaleString('pl-PL')} PLN`;
       document.getElementById('paidProgressBadge').textContent = `Opłacono: ${paidCount}/${items.length}`;
       document.getElementById('budgetCountBadge').textContent = `${items.length} poz.`;
 
+      let filtered = items;
+      if (activeBudgetFilter === 'PAID') filtered = items.filter(i => i.is_paid);
+      else if (activeBudgetFilter === 'UNPAID') filtered = items.filter(i => !i.is_paid);
+
       const container = document.getElementById('budgetContainer');
-      if (items.length === 0) {
+      if (filtered.length === 0) {
         container.innerHTML = `<p class="p-6 text-center text-slate-500 text-xs">Brak pozycji w budżecie.</p>`;
         return;
       }
 
       container.innerHTML = '';
-      items.forEach(item => {
+      filtered.forEach(item => {
+        const isIncome = item.type === 'Przychód';
+        const colorClass = isIncome ? 'text-emerald-400' : (item.type === 'Rata' ? 'text-amber-400' : 'text-rose-400');
         container.insertAdjacentHTML('beforeend', `
           <div class="p-4 flex items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-3">
@@ -796,7 +885,7 @@
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <span class="font-black ${item.type === 'Przychód' ? 'text-emerald-400' : 'text-rose-400'}">${item.type === 'Przychód' ? '+' : '-'}${item.amount} PLN</span>
+              <span class="font-black ${colorClass}">${isIncome ? '+' : '-'}${parseFloat(item.amount).toLocaleString('pl-PL')} PLN</span>
               <button onclick="deleteBudgetItem('${item.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash-can"></i></button>
             </div>
           </div>
@@ -823,6 +912,18 @@
       document.getElementById(id).classList.toggle('hidden', !show);
     }
 
+    function toggleCollapsible(elementId, iconId) {
+      const el = document.getElementById(elementId);
+      const icon = document.getElementById(iconId);
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        if (icon) { icon.classList.remove('fa-circle-plus'); icon.classList.add('fa-circle-minus'); }
+      } else {
+        el.classList.add('hidden');
+        if (icon) { icon.classList.remove('fa-circle-minus'); icon.classList.add('fa-circle-plus'); }
+      }
+    }
+
     async function handleAddVehicle(e) {
       e.preventDefault();
       const newVeh = {
@@ -846,6 +947,20 @@
       if (val !== null && !isNaN(val)) {
         v.mileage = parseInt(val, 10);
         await supabaseClient.from('vehicles').update({ mileage: v.mileage }).eq('id', v.id);
+        renderAll();
+      }
+    }
+
+    async function deleteCurrentVehicle() {
+      if (appData.vehicles.length <= 1) {
+        alert("Nie możesz usunąć jedynego pojazdu!");
+        return;
+      }
+      const v = getActiveVehicle();
+      if (confirm(`Usunąć pojazd "${v.name}"?`)) {
+        await supabaseClient.from('vehicles').delete().eq('id', v.id);
+        appData.vehicles = appData.vehicles.filter(item => item.id !== v.id);
+        appData.activeVehicleId = appData.vehicles[0].id;
         renderAll();
       }
     }

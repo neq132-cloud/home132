@@ -44,7 +44,6 @@
       min-height: 100vh;
     }
 
-    /* Custom Glassmorphism Panels */
     .glass-panel {
       background: rgba(17, 24, 39, 0.75);
       backdrop-filter: blur(12px);
@@ -65,7 +64,6 @@
       box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
     }
 
-    /* Custom Scrollbars */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -89,7 +87,6 @@
       scrollbar-width: none;
     }
 
-    /* Modal Animation */
     .modal-backdrop {
       background: rgba(3, 7, 18, 0.8);
       backdrop-filter: blur(6px);
@@ -120,7 +117,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="text-xl font-extrabold tracking-wide text-white uppercase">Garaż<span class="text-amber-500">Pro</span></h1>
-              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.3</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">v3.5</span>
             </div>
             <p class="text-xs text-slate-400">Dziennik Serwisowy & Budżet</p>
           </div>
@@ -171,7 +168,7 @@
     <!-- ==================== MODUŁ GARAŻ ==================== -->
     <div id="moduleGaraz" class="space-y-6">
 
-      <!-- ACTIVE VEHICLE HEADER & QUICK ACTIONS -->
+      <!-- ACTIVE VEHICLE BANNER -->
       <div id="vehicleBanner" class="glass-panel p-5 rounded-2xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
         <div class="flex items-center space-x-4">
           <div id="vehicleAvatar" class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-500 text-2xl font-bold shadow-inner shrink-0">
@@ -201,10 +198,10 @@
         </div>
       </div>
 
-      <!-- DOCUMENT DATES & EXPIRATION DASHBOARD WIDGETS (PRZEGLAD & OC) -->
+      <!-- DOCUMENT DATES WIDGETS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <!-- Card 1: Przeglad Techniczny -->
+        <!-- Card 1: Przeglad -->
         <div id="inspectionCard" class="glass-panel p-4 rounded-2xl border flex items-center justify-between relative overflow-hidden">
           <div class="flex items-center space-x-3.5">
             <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg shrink-0">
@@ -263,7 +260,6 @@
       <!-- DASHBOARD STATS CARDS -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <!-- Stat 1: Przebieg Główny -->
         <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-slate-800/40 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-gauge-high"></i>
@@ -275,17 +271,15 @@
           </p>
         </div>
 
-        <!-- Stat 2: Łączny Koszt -->
         <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-cyan-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-wallet"></i>
           </div>
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Suma Wydatków</p>
           <h3 id="statTotalCost" class="text-2xl font-black text-cyan-400 mt-1">0 PLN</h3>
-          <p id="statCostSub" class="text-[11px] text-slate-400 mt-1">Łącznie dla auta</p>
+          <p id="statCostSub" class="text-[11px] text-slate-400 mt-1">Łącznie dla auta (bez pomijanych)</p>
         </div>
 
-        <!-- Stat 3: Liczba Napraw -->
         <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-amber-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-screwdriver-wrench"></i>
@@ -295,7 +289,6 @@
           <p id="statAvgCost" class="text-[11px] text-slate-400 mt-1">Średnio: 0 PLN / wpis</p>
         </div>
 
-        <!-- Stat 4: Ostatnia Usługa -->
         <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-emerald-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-calendar-check"></i>
@@ -307,13 +300,12 @@
 
       </div>
 
-      <!-- WORKSPACE GRID: FORM & HISTORY -->
+      <!-- WORKSPACE GRID -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- LEFT COLUMN: ADD ENTRY FORM & ANALYTICS (4 cols) -->
+        <!-- LEFT COLUMN: FORM & ANALYTICS -->
         <div class="lg:col-span-4 space-y-6">
           
-          <!-- Form Card Zwijany -->
           <div class="glass-panel p-5 rounded-2xl border relative">
             <div onclick="toggleCollapsible('serviceForm', 'serviceFormIcon')" class="flex items-center justify-between cursor-pointer select-none pb-3 border-b border-slate-800">
               <h3 class="font-bold text-white text-base flex items-center gap-2">
@@ -362,6 +354,11 @@
                 <textarea id="partNotes" rows="2" placeholder="np. Filtr Mann-Filter, Olej Motul Specific" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
               </div>
 
+              <div class="flex items-center space-x-2 pt-1">
+                <input type="checkbox" id="partIncludeInSum" checked class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-cyan-500 cursor-pointer">
+                <label for="partIncludeInSum" class="text-xs font-medium text-slate-300 cursor-pointer select-none">Uwzględniaj w sumie wydatków</label>
+              </div>
+
               <button type="submit" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span>Zapisz w Dzienniku</span>
@@ -369,7 +366,6 @@
             </form>
           </div>
 
-          <!-- VISUAL EXPENSE ANALYTICS CARD -->
           <div class="glass-panel p-5 rounded-2xl border space-y-4">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
               <h4 class="font-bold text-white text-sm flex items-center gap-2">
@@ -383,19 +379,16 @@
 
         </div>
 
-        <!-- RIGHT COLUMN: HISTORY & LOGS (8 cols) -->
+        <!-- RIGHT COLUMN: HISTORY & FILTERS -->
         <div class="lg:col-span-8 space-y-4">
           
-          <!-- Controls: Search & Category Pills & Export -->
           <div class="glass-panel p-4 rounded-2xl border space-y-3">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <!-- Search bar -->
               <div class="relative w-full sm:w-72">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                 <input type="text" id="searchInput" oninput="renderHistory()" placeholder="Szukaj nazwy, marki, uwag..." class="glass-input pl-8 pr-3 py-1.5 w-full text-xs rounded-xl">
               </div>
 
-              <!-- Import / Export / Backup Buttons -->
               <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
                 <button onclick="exportJSON()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-xl border border-slate-700 flex items-center gap-1.5 transition" title="Pobierz kopię zapasową">
                   <i class="fa-solid fa-download text-cyan-400"></i> Eksport
@@ -407,7 +400,6 @@
               </div>
             </div>
 
-            <!-- Category Filter Pills -->
             <div class="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1 scrollbar-none" id="categoryPills">
               <button onclick="setCategoryFilter('ALL')" class="pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400">Wszystkie</button>
               <button onclick="setCategoryFilter('Silnik')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Silnik</button>
@@ -417,9 +409,33 @@
               <button onclick="setCategoryFilter('Opony')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Opony</button>
               <button onclick="setCategoryFilter('Inne')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Inne</button>
             </div>
+
+            <!-- ADVANCED FILTERS BAR -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="text-slate-400 whitespace-nowrap">Od:</span>
+                <input type="date" id="filterDateFrom" onchange="renderHistory()" class="glass-input px-2 py-1 rounded-lg w-full text-xs">
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-slate-400 whitespace-nowrap">Do:</span>
+                <input type="date" id="filterDateTo" onchange="renderHistory()" class="glass-input px-2 py-1 rounded-lg w-full text-xs">
+              </div>
+              <div class="flex items-center gap-1.5">
+                <select id="filterSortOrder" onchange="renderHistory()" class="glass-input px-2 py-1.5 rounded-lg w-full text-xs cursor-pointer">
+                  <option value="dateDesc">📅 Data: Najnowsze</option>
+                  <option value="dateAsc">📅 Data: Najstarsze</option>
+                  <option value="costDesc">💰 Koszt: Od najwyższego</option>
+                  <option value="costAsc">💰 Koszt: Od najniższego</option>
+                  <option value="mileageDesc">🚗 Przebieg: Najwyższy</option>
+                </select>
+                <button onclick="resetFilters()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition shrink-0" title="Resetuj filtry">
+                  <i class="fa-solid fa-rotate-left"></i>
+                </button>
+              </div>
+            </div>
+
           </div>
 
-          <!-- History Log Container -->
           <div class="glass-panel rounded-2xl border overflow-hidden">
             <div class="px-5 py-3.5 border-b border-slate-800 flex justify-between items-center bg-slate-900/40">
               <h3 class="font-bold text-white text-sm flex items-center gap-2">
@@ -428,10 +444,8 @@
               <span id="recordBadge" class="text-xs bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full border border-slate-700 font-mono">0 wpisów</span>
             </div>
 
-            <!-- Entries Container -->
             <div id="historyContainer" class="divide-y divide-slate-800/80"></div>
 
-            <!-- Empty State -->
             <div id="emptyState" class="p-12 text-center text-slate-500 space-y-3">
               <div class="w-16 h-16 mx-auto rounded-full bg-slate-800/60 flex items-center justify-center text-slate-600 text-2xl">
                 <i class="fa-solid fa-folder-open"></i>
@@ -450,10 +464,8 @@
     <!-- ==================== MODUŁ BUDŻET ==================== -->
     <div id="moduleBudzet" class="space-y-6 hidden">
 
-      <!-- DASHBOARD CARDS BUDŻETU -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <!-- Przychody -->
         <div class="glass-panel p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-emerald-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-money-bill-wave"></i>
@@ -465,7 +477,6 @@
           <p class="text-[11px] text-slate-400 mt-1">Suma przychodów w miesiącu</p>
         </div>
 
-        <!-- Raty Kredytów -->
         <div class="glass-panel p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-amber-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-landmark"></i>
@@ -477,7 +488,6 @@
           <p class="text-[11px] text-slate-400 mt-1">Raty kredytowe i pożyczki</p>
         </div>
 
-        <!-- Wydatki Stałe -->
         <div class="glass-panel p-4 rounded-2xl border border-rose-500/20 bg-rose-500/5 relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-rose-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-house-chimney-crack"></i>
@@ -489,7 +499,6 @@
           <p class="text-[11px] text-slate-400 mt-1">Czynsz, prąd, internet, rachunki</p>
         </div>
 
-        <!-- Zostaje na czysto -->
         <div class="glass-panel p-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 relative overflow-hidden group">
           <div class="absolute -right-3 -bottom-3 text-cyan-500/10 text-6xl group-hover:scale-110 transition">
             <i class="fa-solid fa-piggy-bank"></i>
@@ -503,10 +512,8 @@
 
       </div>
 
-      <!-- WORKSPACE: FORMULARZ BUDŻETU & TABELA ROZLICZEŃ -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- LEWA KOLUMNA: FORMULARZ BUDŻETU ZWIJANY -->
         <div class="lg:col-span-4 space-y-6">
           <div class="glass-panel p-5 rounded-2xl border relative">
             <div onclick="toggleCollapsible('budgetForm', 'budgetFormIcon')" class="flex items-center justify-between cursor-pointer select-none pb-3 border-b border-slate-800">
@@ -529,7 +536,7 @@
 
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Nazwa Pozycji *</label>
-                <input type="text" id="budgetName" required placeholder="np. Wypłata, Rata Renault, Prąd" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                <input type="text" id="budgetName" required placeholder="np. Wypłata, Rata, Prąd" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
               </div>
 
               <div class="grid grid-cols-2 gap-3">
@@ -546,7 +553,7 @@
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label class="block text-xs font-semibold text-slate-300 mb-1">Osoba / Właściciel</label>
-                  <input type="text" id="budgetPerson" placeholder="np. Marcel lub Martyna" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                  <input type="text" id="budgetPerson" placeholder="np. Marcel" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
                 </div>
                 <div>
                   <label class="block text-xs font-semibold text-slate-300 mb-1">Status Płatności</label>
@@ -559,7 +566,7 @@
 
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Uwagi / Odbiorca (opcjonalnie)</label>
-                <textarea id="budgetNotes" rows="2" placeholder="np. Przelew do 10-go każdego miesiąca" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
+                <textarea id="budgetNotes" rows="2" placeholder="np. Przelew do 10-go" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
               </div>
 
               <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
@@ -570,7 +577,6 @@
           </div>
         </div>
 
-        <!-- PRAWA KOLUMNA: TABELA ROZLICZEŃ -->
         <div class="lg:col-span-8 space-y-4">
           
           <div class="glass-panel p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -609,7 +615,7 @@
 
   </main>
 
-  <!-- MODAL 1: EDIT SERVICE ENTRY -->
+  <!-- MODALS -->
   <div id="editEntryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
     <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-6 relative shadow-2xl space-y-4">
       <button onclick="toggleModal('editEntryModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
@@ -668,6 +674,11 @@
           <textarea id="editPartNotes" rows="2" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
         </div>
 
+        <div class="flex items-center space-x-2 pt-1">
+          <input type="checkbox" id="editPartIncludeInSum" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-cyan-500 cursor-pointer">
+          <label for="editPartIncludeInSum" class="text-xs font-medium text-slate-300 cursor-pointer select-none">Uwzględniaj w sumie wydatków</label>
+        </div>
+
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
           <button type="button" onclick="toggleModal('editEntryModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl">Anuluj</button>
           <button type="submit" class="px-5 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/20">Zapisz Zmiany</button>
@@ -676,7 +687,6 @@
     </div>
   </div>
 
-  <!-- MODAL 2: ADD NEW VEHICLE -->
   <div id="addVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
     <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
       <button onclick="toggleModal('addVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
@@ -732,7 +742,6 @@
           <input type="number" id="newVehicleMileage" placeholder="np. 215000" class="glass-input w-full px-3 py-2 rounded-xl">
         </div>
 
-        <!-- DOCUMENT DATES -->
         <div class="pt-2 border-t border-slate-800 space-y-3">
           <p class="font-bold text-amber-400 text-xs flex items-center gap-1.5">
             <i class="fa-solid fa-calendar-check"></i> Terminy Badań i Polisy:
@@ -761,7 +770,6 @@
     </div>
   </div>
 
-  <!-- MODAL 3: EDIT VEHICLE DETAILS -->
   <div id="editVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
     <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
       <button onclick="toggleModal('editVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white p-1">
@@ -817,7 +825,6 @@
           <input type="number" id="editVehicleMileage" class="glass-input w-full px-3 py-2 rounded-xl">
         </div>
 
-        <!-- DOCUMENT DATES -->
         <div class="pt-2 border-t border-slate-800 space-y-3">
           <p class="font-bold text-cyan-400 text-xs flex items-center gap-1.5">
             <i class="fa-solid fa-calendar-days"></i> Badanie Techniczne & Polisa OC:
@@ -846,10 +853,10 @@
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC (JAVASCRIPT) -->
+  <!-- SCRIPT -->
   <script>
     const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyeHUb738gY-UpQlhI5qVR8ji8RNOpzlP7XOjZeYqQxI8qHQXCcRu6L280-NyKnsknn/exec';
-    const STORAGE_KEY = 'garaz_pro_db_v2_7';
+    const STORAGE_KEY = 'garaz_pro_db_v2_8';
 
     let appData = {
       vehicles: [
@@ -876,7 +883,8 @@
           mileage: 210000,
           date: '2026-04-12',
           category: 'Silnik',
-          notes: 'Kompletny zestaw rozrządu Continental'
+          notes: 'Kompletny zestaw rozrządu Continental',
+          includeInSum: true
         }
       ],
       budgetItems: [],
@@ -887,7 +895,6 @@
     let activeBudgetFilter = 'ALL';
     let currentModule = 'garaz';
 
-    // --- DOM LOAD INIT ---
     document.addEventListener("DOMContentLoaded", () => {
       loadDataFromStorage();
       
@@ -896,7 +903,6 @@
       document.getElementById('budgetDueDate').value = today;
 
       renderAll();
-
       fetchDataFromGoogleDrive();
     });
 
@@ -904,13 +910,6 @@
       fetchDataFromGoogleDrive();
     });
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        fetchDataFromGoogleDrive();
-      }
-    });
-
-    // --- TOGGLE COLLAPSIBLE FORMS ---
     function toggleCollapsible(elementId, iconId) {
       const el = document.getElementById(elementId);
       const icon = document.getElementById(iconId);
@@ -930,7 +929,6 @@
       }
     }
 
-    // --- SWITCH MODULES (GARAŻ / BUDŻET) ---
     function switchModule(mod) {
       currentModule = mod;
       const garazDiv = document.getElementById('moduleGaraz');
@@ -955,7 +953,6 @@
       }
     }
 
-    // --- LOCAL STORAGE & GOOGLE DRIVE AUTO-SYNC ---
     function loadDataFromStorage() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -965,7 +962,6 @@
           console.error("Błąd odczytu z localStorage:", e);
         }
       }
-
       appData.googleWebhookUrl = DEFAULT_WEBHOOK_URL;
       ensureValidDataStructure();
     }
@@ -990,6 +986,10 @@
       if (!appData.entries) appData.entries = [];
       if (!appData.budgetItems) appData.budgetItems = [];
 
+      appData.entries.forEach(e => {
+        if (e.includeInSum === undefined) e.includeInSum = true;
+      });
+
       if (!appData.vehicles.some(v => v.id === appData.activeVehicleId)) {
         appData.activeVehicleId = appData.vehicles[0].id;
       }
@@ -997,12 +997,7 @@
 
     function saveDataToStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-
-      syncFullJsonToGoogleDrive().then(() => {
-        setTimeout(() => {
-          fetchDataFromGoogleDrive();
-        }, 800);
-      });
+      syncFullJsonToGoogleDrive();
     }
 
     function syncFullJsonToGoogleDrive() {
@@ -1014,8 +1009,6 @@
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(appData, null, 2)
-      }).then(() => {
-        console.log("Zapisano/Nadpisano plik garaz_pro_db.json na Dysku Google");
       }).catch(err => {
         console.error("Błąd zapisu na Dysku Google:", err);
       });
@@ -1033,14 +1026,13 @@
           if (remoteData && remoteData.vehicles && remoteData.vehicles.length > 0) {
             appData = remoteData;
             appData.googleWebhookUrl = DEFAULT_WEBHOOK_URL;
-
             ensureValidDataStructure();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
             renderAll();
           }
         })
         .catch(err => {
-          console.log("Dane załadowane lokalnie (Brak połączenia lub odczytu z Dysku):", err);
+          console.log("Dane załadowane lokalnie:", err);
         });
     }
 
@@ -1058,7 +1050,6 @@
     function renderVehicleSelector() {
       const select = document.getElementById('vehicleSelect');
       select.innerHTML = '';
-      
       appData.vehicles.forEach(v => {
         const opt = document.createElement('option');
         opt.value = v.id;
@@ -1090,23 +1081,17 @@
       if (!dateStr) return null;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
       const target = new Date(dateStr);
       target.setHours(0, 0, 0, 0);
-
-      const diffTime = target - today;
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
     }
 
     function renderDocumentDates() {
       const current = getActiveVehicle();
-
       const inspDays = calculateDaysLeft(current.nextInspection);
       const inspText = document.getElementById('inspectionDateText');
       const inspBadge = document.getElementById('inspectionBadge');
-      const inspSub = document.getElementById('inspectionSubText');
-
-      inspSub.textContent = `Ostatnie badanie: ${formatDatePl(current.lastInspection) || 'b.d.'}`;
+      document.getElementById('inspectionSubText').textContent = `Ostatnie badanie: ${formatDatePl(current.lastInspection) || 'b.d.'}`;
 
       if (inspDays === null) {
         inspText.textContent = "Brak daty";
@@ -1153,8 +1138,7 @@
       const current = getActiveVehicle();
       const val = prompt(`Podaj aktualny przebieg dla: ${current.name} (km)`, current.mileage || 0);
       if (val !== null && !isNaN(val) && val.trim() !== '') {
-        const newKm = parseInt(val, 10);
-        current.mileage = newKm;
+        current.mileage = parseInt(val, 10);
         saveDataToStorage();
         renderAll();
       }
@@ -1165,9 +1149,8 @@
         alert("Nie możesz usunąć jedynego pojazdu!");
         return;
       }
-
       const current = getActiveVehicle();
-      if (confirm(`Czy na pewno chcesz usunąć pojazd: "${current.name}" oraz wszystkie jego wpisy serwisowe?`)) {
+      if (confirm(`Czy na pewno chcesz usunąć pojazd: "${current.name}"?`)) {
         appData.vehicles = appData.vehicles.filter(v => v.id !== current.id);
         appData.entries = appData.entries.filter(e => e.vehicleId !== current.id);
         appData.activeVehicleId = appData.vehicles[0].id;
@@ -1190,11 +1173,9 @@
         nextInspection: document.getElementById('newVehicleNextInsp').value,
         ocExpiration: document.getElementById('newVehicleOC').value
       };
-
       appData.vehicles.push(newVeh);
       appData.activeVehicleId = newVeh.id;
       saveDataToStorage();
-      
       toggleModal('addVehicleModal', false);
       e.target.reset();
       renderAll();
@@ -1211,14 +1192,12 @@
       document.getElementById('editVehicleLastInsp').value = current.lastInspection || '';
       document.getElementById('editVehicleNextInsp').value = current.nextInspection || '';
       document.getElementById('editVehicleOC').value = current.ocExpiration || '';
-
       toggleModal('editVehicleModal', true);
     }
 
     function handleEditVehicleSubmit(e) {
       e.preventDefault();
       const current = getActiveVehicle();
-
       current.name = document.getElementById('editVehicleName').value.trim();
       current.plate = document.getElementById('editVehiclePlate').value.trim().toUpperCase();
       current.year = document.getElementById('editVehicleYear').value.trim();
@@ -1228,7 +1207,6 @@
       current.lastInspection = document.getElementById('editVehicleLastInsp').value;
       current.nextInspection = document.getElementById('editVehicleNextInsp').value;
       current.ocExpiration = document.getElementById('editVehicleOC').value;
-
       saveDataToStorage();
       toggleModal('editVehicleModal', false);
       renderAll();
@@ -1241,25 +1219,22 @@
     function renderStats() {
       const activeVeh = getActiveVehicle();
       const entries = getActiveEntries();
-
       let maxEntryMileage = entries.reduce((max, e) => Math.max(max, e.mileage || 0), 0);
       let currentMileage = Math.max(activeVeh.mileage || 0, maxEntryMileage);
       document.getElementById('statMileage').textContent = `${currentMileage.toLocaleString('pl-PL')} km`;
 
-      const totalCost = entries.reduce((sum, e) => sum + (parseFloat(e.cost) || 0), 0);
+      const includedEntries = entries.filter(e => e.includeInSum !== false);
+      const totalCost = includedEntries.reduce((sum, e) => sum + (parseFloat(e.cost) || 0), 0);
       document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
 
       const count = entries.length;
       document.getElementById('statServicesCount').textContent = count;
-      
-      const avg = count > 0 ? (totalCost / count) : 0;
-      document.getElementById('statAvgCost').textContent = `Średnio: ${avg.toFixed(0)} PLN / wpis`;
+      document.getElementById('statAvgCost').textContent = `Średnio: ${count > 0 ? (totalCost / count).toFixed(0) : 0} PLN / wpis`;
 
       if (entries.length > 0) {
         const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
-        const last = sorted[0];
-        document.getElementById('statLastDate').textContent = formatDatePl(last.date);
-        document.getElementById('statLastPart').textContent = last.name;
+        document.getElementById('statLastDate').textContent = formatDatePl(sorted[0].date);
+        document.getElementById('statLastPart').textContent = sorted[0].name;
       } else {
         document.getElementById('statLastDate').textContent = "Brak wpisów";
         document.getElementById('statLastPart').textContent = "-";
@@ -1269,10 +1244,8 @@
     function renderSmartAlert() {
       const entries = getActiveEntries();
       const activeVeh = getActiveVehicle();
-
       const inspDays = calculateDaysLeft(activeVeh.nextInspection);
       const ocDays = calculateDaysLeft(activeVeh.ocExpiration);
-
       const alertBanner = document.getElementById('smartAlert');
       const alertTitle = document.getElementById('alertTitle');
       const alertDesc = document.getElementById('alertDesc');
@@ -1282,7 +1255,7 @@
         alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-red-500 bg-red-500/10 flex items-center justify-between';
         alertTitle.textContent = "Brak Ważnego Badania Technicznego!";
         alertTitle.className = "text-sm font-bold text-red-400";
-        alertDesc.textContent = `Przegląd upłynął ${Math.abs(inspDays)} dni temu (${formatDatePl(activeVeh.nextInspection)}). Zrób badanie na stacji kontroli!`;
+        alertDesc.textContent = `Przegląd upłynął ${Math.abs(inspDays)} dni temu. Zrób badanie na stacji kontroli!`;
         alertBadge.textContent = "KRYTYCZNE";
         alertBadge.className = "text-[11px] font-semibold text-red-300 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30";
         return;
@@ -1292,65 +1265,52 @@
         alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-red-500 bg-red-500/10 flex items-center justify-between';
         alertTitle.textContent = "Brak Ważnej Polisy OC!";
         alertTitle.className = "text-sm font-bold text-red-400";
-        alertDesc.textContent = `Ubezpieczenie upłynęło ${Math.abs(ocDays)} dni temu. Odnów polisę natychmiast!`;
+        alertDesc.textContent = `Ubezpieczenie upłynęło ${Math.abs(ocDays)} dni temu. Odnów polisę!`;
         alertBadge.textContent = "BRAK OC!";
         alertBadge.className = "text-[11px] font-semibold text-red-300 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30";
         return;
       }
 
-      const oilEntries = entries.filter(e => 
-        e.category === 'Silnik' || e.name.toLowerCase().includes('olej')
-      ).sort((a,b) => new Date(b.date) - new Date(a.date));
+      const oilEntries = entries.filter(e => e.category === 'Silnik' || e.name.toLowerCase().includes('olej')).sort((a,b) => new Date(b.date) - new Date(a.date));
 
       if (oilEntries.length === 0) {
         alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-cyan-500 bg-cyan-500/5 flex items-center justify-between';
         alertTitle.textContent = "Brak Danych o Wymianie Oleju";
         alertTitle.className = "text-sm font-bold text-cyan-400";
-        alertDesc.textContent = "Dodaj pierwszą wymianę oleju, aby uruchomić inteligentne przypomnienia.";
+        alertDesc.textContent = "Dodaj pierwszą wymianę oleju, aby uruchomić przypomnienia.";
         alertBadge.textContent = "INFORMACJA";
         alertBadge.className = "text-[11px] font-semibold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-500/30";
         return;
       }
 
-      const lastOil = oilEntries[0];
-      const kmSinceOil = (activeVeh.mileage || lastOil.mileage) - lastOil.mileage;
-
+      const kmSinceOil = (activeVeh.mileage || oilEntries[0].mileage) - oilEntries[0].mileage;
       if (kmSinceOil >= 12000) {
         alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-red-500 bg-red-500/10 flex items-center justify-between';
         alertTitle.textContent = "Zalecana Wymiana Oleju!";
         alertTitle.className = "text-sm font-bold text-red-400";
-        alertDesc.textContent = `Od ostatniej wymiany minęło ${kmSinceOil.toLocaleString('pl-PL')} km (${lastOil.name}). Czas na serwis!`;
+        alertDesc.textContent = `Od ostatniej wymiany minęło ${kmSinceOil.toLocaleString('pl-PL')} km. Czas na serwis!`;
         alertBadge.textContent = "SERWIS!";
         alertBadge.className = "text-[11px] font-semibold text-red-300 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30";
-      } else if (kmSinceOil >= 9000) {
-        alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-amber-500 bg-amber-500/10 flex items-center justify-between';
-        alertTitle.textContent = "Wkrótce Wymiana Oleju";
-        alertTitle.className = "text-sm font-bold text-amber-400";
-        alertDesc.textContent = `Przebieg od ostatniej wymiany oleju: ${kmSinceOil.toLocaleString('pl-PL')} km. Zaplanuj serwis.`;
-        alertBadge.textContent = "UWAGA";
-        alertBadge.className = "text-[11px] font-semibold text-amber-300 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30";
       } else {
         alertBanner.className = 'glass-panel p-4 rounded-2xl border-l-4 border-l-emerald-500 bg-emerald-500/10 flex items-center justify-between';
         alertTitle.textContent = "Stan Serwisowy Optymalny";
         alertTitle.className = "text-sm font-bold text-emerald-400";
-        alertDesc.textContent = `Olej wymieniony ${kmSinceOil.toLocaleString('pl-PL')} km temu (${formatDatePl(lastOil.date)}). Silnik pod opieką!`;
+        alertDesc.textContent = `Olej wymieniony ${kmSinceOil.toLocaleString('pl-PL')} km temu. Silnik pod opieką!`;
         alertBadge.textContent = "DOBRY STAN";
         alertBadge.className = "text-[11px] font-semibold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30";
       }
     }
 
     function renderExpenseAnalytics() {
-      const entries = getActiveEntries();
+      const entries = getActiveEntries().filter(e => e.includeInSum !== false);
       const container = document.getElementById('analyticsBars');
-      
       if (entries.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Brak zarejestrowanych wydatków</p>`;
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Brak uwzględnionych wydatków</p>`;
         return;
       }
 
       const categoryTotals = {};
       let grandTotal = 0;
-
       entries.forEach(e => {
         const cat = e.category || 'Inne';
         const cost = parseFloat(e.cost) || 0;
@@ -1368,13 +1328,11 @@
       };
 
       container.innerHTML = '';
-
       Object.keys(categoryTotals).forEach(cat => {
         const total = categoryTotals[cat];
         const percent = grandTotal > 0 ? Math.round((total / grandTotal) * 100) : 0;
         const config = categoriesConfig[cat] || categoriesConfig['Inne'];
-
-        const barHtml = `
+        container.insertAdjacentHTML('beforeend', `
           <div class="space-y-1">
             <div class="flex justify-between items-center text-xs">
               <span class="text-slate-300 font-medium flex items-center gap-1.5">
@@ -1386,14 +1344,12 @@
               <div class="h-full ${config.color} rounded-full transition-all duration-500" style="width: ${percent}%"></div>
             </div>
           </div>
-        `;
-        container.insertAdjacentHTML('beforeend', barHtml);
+        `);
       });
     }
 
     function handleFormSubmit(e) {
       e.preventDefault();
-
       const activeVeh = getActiveVehicle();
       const newMileage = parseInt(document.getElementById('partMileage').value, 10);
 
@@ -1405,27 +1361,24 @@
         mileage: newMileage,
         date: document.getElementById('partDate').value,
         category: document.getElementById('partCategory').value,
-        notes: document.getElementById('partNotes').value.trim()
+        notes: document.getElementById('partNotes').value.trim(),
+        includeInSum: document.getElementById('partIncludeInSum').checked
       };
 
       appData.entries.unshift(entry);
-
       if (newMileage > (activeVeh.mileage || 0)) {
         activeVeh.mileage = newMileage;
       }
-
       saveDataToStorage();
-
       document.getElementById('serviceForm').reset();
       document.getElementById('partDate').value = new Date().toISOString().split('T')[0];
-
+      document.getElementById('partIncludeInSum').checked = true;
       renderAll();
     }
 
     function openEditModal(entryId) {
       const entry = appData.entries.find(e => e.id === entryId);
       if (!entry) return;
-
       document.getElementById('editEntryId').value = entry.id;
       document.getElementById('editPartName').value = entry.name;
       document.getElementById('editPartCost').value = entry.cost;
@@ -1433,20 +1386,17 @@
       document.getElementById('editPartDate').value = entry.date;
       document.getElementById('editPartCategory').value = entry.category || 'Inne';
       document.getElementById('editPartNotes').value = entry.notes || '';
-
+      document.getElementById('editPartIncludeInSum').checked = entry.includeInSum !== false;
       toggleModal('editEntryModal', true);
     }
 
     function handleEditEntrySubmit(e) {
       e.preventDefault();
-
       const entryId = document.getElementById('editEntryId').value;
       const entryIndex = appData.entries.findIndex(e => e.id === entryId);
-
       if (entryIndex === -1) return;
 
       const newMileage = parseInt(document.getElementById('editPartMileage').value, 10);
-
       appData.entries[entryIndex] = {
         ...appData.entries[entryIndex],
         name: document.getElementById('editPartName').value.trim(),
@@ -1454,14 +1404,14 @@
         mileage: newMileage,
         date: document.getElementById('editPartDate').value,
         category: document.getElementById('editPartCategory').value,
-        notes: document.getElementById('editPartNotes').value.trim()
+        notes: document.getElementById('editPartNotes').value.trim(),
+        includeInSum: document.getElementById('editPartIncludeInSum').checked
       };
 
       const activeVeh = getActiveVehicle();
       if (newMileage > (activeVeh.mileage || 0)) {
         activeVeh.mileage = newMileage;
       }
-
       saveDataToStorage();
       toggleModal('editEntryModal', false);
       renderAll();
@@ -1477,26 +1427,29 @@
 
     function setCategoryFilter(category) {
       activeCategoryFilter = category;
-      
-      const pills = document.querySelectorAll('#categoryPills button');
-      pills.forEach(btn => {
+      document.querySelectorAll('#categoryPills button').forEach(btn => {
         if (btn.textContent.includes(category) || (category === 'ALL' && btn.textContent === 'Wszystkie')) {
           btn.className = "pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400";
         } else {
           btn.className = "pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
         }
       });
-
       renderHistory();
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterDateFrom').value = '';
+      document.getElementById('filterDateTo').value = '';
+      document.getElementById('filterSortOrder').value = 'dateDesc';
+      setCategoryFilter('ALL');
     }
 
     function formatWpisyCount(count) {
       if (count === 1) return '1 wpis';
       const mod10 = count % 10;
       const mod100 = count % 100;
-      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) {
-        return `${count} wpisy`;
-      }
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return `${count} wpisy`;
       return `${count} wpisów`;
     }
 
@@ -1504,14 +1457,17 @@
       const container = document.getElementById('historyContainer');
       const emptyState = document.getElementById('emptyState');
       const recordBadge = document.getElementById('recordBadge');
+      
       const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      const dateFrom = document.getElementById('filterDateFrom').value;
+      const dateTo = document.getElementById('filterDateTo').value;
+      const sortOrder = document.getElementById('filterSortOrder').value;
 
       let filtered = getActiveEntries();
 
       if (activeCategoryFilter !== 'ALL') {
         filtered = filtered.filter(e => e.category === activeCategoryFilter);
       }
-
       if (searchQuery !== '') {
         filtered = filtered.filter(e => 
           e.name.toLowerCase().includes(searchQuery) || 
@@ -1520,8 +1476,17 @@
           e.mileage.toString().includes(searchQuery)
         );
       }
+      if (dateFrom) filtered = filtered.filter(e => e.date >= dateFrom);
+      if (dateTo) filtered = filtered.filter(e => e.date <= dateTo);
 
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      filtered.sort((a, b) => {
+        if (sortOrder === 'dateDesc') return new Date(b.date) - new Date(a.date);
+        if (sortOrder === 'dateAsc') return new Date(a.date) - new Date(b.date);
+        if (sortOrder === 'costDesc') return (parseFloat(b.cost) || 0) - (parseFloat(a.cost) || 0);
+        if (sortOrder === 'costAsc') return (parseFloat(a.cost) || 0) - (parseFloat(b.cost) || 0);
+        if (sortOrder === 'mileageDesc') return (b.mileage || 0) - (a.mileage || 0);
+        return 0;
+      });
 
       recordBadge.textContent = formatWpisyCount(filtered.length);
 
@@ -1545,10 +1510,10 @@
 
       filtered.forEach(item => {
         const iconClass = categoryIcons[item.category] || categoryIcons['Inne'];
+        const isExcluded = item.includeInSum === false;
         
         const row = document.createElement('div');
         row.className = 'entry-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
-        
         row.innerHTML = `
           <div class="flex items-start space-x-3.5 flex-1 min-w-0">
             <div class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 mt-0.5 ${iconClass}">
@@ -1558,40 +1523,29 @@
               <div class="flex items-center gap-2 flex-wrap">
                 <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.category || 'Inne'}</span>
+                ${isExcluded ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700"><i class="fa-solid fa-eye-slash text-[9px] mr-1"></i>Pomijany w sumie</span>` : ''}
               </div>
-              
               ${item.notes ? `<p class="text-xs text-slate-400 mt-0.5 truncate"><i class="fa-regular fa-note-sticky text-[10px] mr-1"></i>${escapeHtml(item.notes)}</p>` : ''}
-              
               <div class="flex items-center space-x-4 text-xs text-slate-400 mt-1.5 font-mono">
                 <span><i class="fa-regular fa-calendar text-slate-500 mr-1"></i>${formatDatePl(item.date)}</span>
                 <span><i class="fa-solid fa-gauge-simple text-slate-500 mr-1"></i>${item.mileage.toLocaleString('pl-PL')} km</span>
               </div>
             </div>
           </div>
-
           <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
-            <div class="text-right">
-              <span class="text-base font-black text-cyan-400">${parseFloat(item.cost).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN</span>
-            </div>
-
+            <span class="text-base font-black ${isExcluded ? 'text-slate-400 line-through' : 'text-cyan-400'}">${parseFloat(item.cost).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN</span>
             <div class="flex items-center space-x-1">
-              <button onclick="openEditModal('${item.id}')" title="Edytuj wpis" class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded-lg transition">
-                <i class="fa-solid fa-pen-to-square text-sm"></i>
-              </button>
-              <button onclick="deleteEntry('${item.id}')" title="Usuń wpis" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition">
-                <i class="fa-solid fa-trash-can text-sm"></i>
-              </button>
+              <button onclick="openEditModal('${item.id}')" title="Edytuj wpis" class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
+              <button onclick="deleteEntry('${item.id}')" title="Usuń wpis" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-trash-can text-sm"></i></button>
             </div>
           </div>
         `;
-        
         container.appendChild(row);
       });
     }
 
     function handleBudgetSubmit(e) {
       e.preventDefault();
-
       const item = {
         id: 'bud_' + Date.now(),
         type: document.getElementById('budgetType').value,
@@ -1602,13 +1556,10 @@
         isPaid: document.getElementById('budgetPaidStatus').value === 'PAID',
         notes: document.getElementById('budgetNotes').value.trim()
       };
-
       appData.budgetItems.unshift(item);
       saveDataToStorage();
-
       document.getElementById('budgetForm').reset();
       document.getElementById('budgetDueDate').value = new Date().toISOString().split('T')[0];
-
       renderBudget();
     }
 
@@ -1631,41 +1582,29 @@
 
     function setBudgetFilter(filter) {
       activeBudgetFilter = filter;
-      const bAll = document.getElementById('bFilterAll');
-      const bUnpaid = document.getElementById('bFilterUnpaid');
-      const bPaid = document.getElementById('bFilterPaid');
-
-      bAll.className = filter === 'ALL' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
-      bUnpaid.className = filter === 'UNPAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
-      bPaid.className = filter === 'PAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
-
+      document.getElementById('bFilterAll').className = filter === 'ALL' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+      document.getElementById('bFilterUnpaid').className = filter === 'UNPAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+      document.getElementById('bFilterPaid').className = filter === 'PAID' ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 border border-emerald-400" : "px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
       renderBudget();
     }
 
     function renderBudget() {
       const items = appData.budgetItems || [];
-
-      let income = 0;
-      let loans = 0;
-      let fixed = 0;
-      let paidCount = 0;
+      let income = 0, loans = 0, fixed = 0, paidCount = 0;
 
       items.forEach(i => {
         const amt = parseFloat(i.amount) || 0;
         if (i.type === 'Przychód') income += amt;
         else if (i.type === 'Rata') loans += amt;
         else fixed += amt;
-
         if (i.isPaid) paidCount++;
       });
 
       const net = income - (loans + fixed);
-
       document.getElementById('budgetIncomeTotal').textContent = `${income.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
       document.getElementById('budgetLoansTotal').textContent = `${loans.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
       document.getElementById('budgetFixedTotal').textContent = `${fixed.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
       document.getElementById('budgetNetTotal').textContent = `${net.toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN`;
-
       document.getElementById('paidProgressBadge').textContent = `Opłacono: ${paidCount}/${items.length}`;
       document.getElementById('budgetCountBadge').textContent = `${items.length} pozycji`;
 
@@ -1688,40 +1627,28 @@
       filtered.forEach(item => {
         const isIncome = item.type === 'Przychód';
         const colorClass = isIncome ? 'text-emerald-400' : (item.type === 'Rata' ? 'text-amber-400' : 'text-rose-400');
-        
         const row = document.createElement('div');
         row.className = 'entry-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
-
         row.innerHTML = `
           <div class="flex items-center space-x-3.5 flex-1 min-w-0">
-            <button onclick="toggleBudgetPaid('${item.id}')" title="Zmień status opłacenia" class="w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-500 border-slate-700 hover:text-white'}">
+            <button onclick="toggleBudgetPaid('${item.id}')" title="Zmień status" class="w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition ${item.isPaid ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-500 border-slate-700 hover:text-white'}">
               <i class="fa-solid ${item.isPaid ? 'fa-check' : 'fa-clock'} text-sm"></i>
             </button>
-
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <h4 class="text-sm font-bold text-white truncate">${escapeHtml(item.name)}</h4>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.type}</span>
                 ${item.person ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"><i class="fa-solid fa-user text-[9px] mr-1"></i>${escapeHtml(item.person)}</span>` : ''}
-                <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${item.isPaid ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${item.isPaid ? 'Opłacone' : 'Do zapłaty'}</span>
               </div>
-
               ${item.notes ? `<p class="text-xs text-slate-400 mt-0.5 truncate"><i class="fa-regular fa-note-sticky text-[10px] mr-1"></i>${escapeHtml(item.notes)}</p>` : ''}
-
-              <p class="text-xs text-slate-400 mt-1 font-mono">
-                <i class="fa-regular fa-calendar text-slate-500 mr-1"></i>Termin: ${formatDatePl(item.dueDate)}
-              </p>
+              <p class="text-xs text-slate-400 mt-1 font-mono"><i class="fa-regular fa-calendar text-slate-500 mr-1"></i>Termin: ${formatDatePl(item.dueDate)}</p>
             </div>
           </div>
-
           <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
             <span class="text-base font-black ${colorClass}">${isIncome ? '+' : '-'}${parseFloat(item.amount).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 2})} PLN</span>
-            <button onclick="deleteBudgetItem('${item.id}')" title="Usuń pozycję" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition">
-              <i class="fa-solid fa-trash-can text-sm"></i>
-            </button>
+            <button onclick="deleteBudgetItem('${item.id}')" title="Usuń" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-trash-can text-sm"></i></button>
           </div>
         `;
-
         container.appendChild(row);
       });
     }
@@ -1729,9 +1656,8 @@
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
       const downloadAnchor = document.createElement('a');
-      const dateStr = new Date().toISOString().split('T')[0];
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `GarazPro_Kopia_${dateStr}.json`);
+      downloadAnchor.setAttribute("download", `GarazPro_Kopia_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
@@ -1744,7 +1670,6 @@
     function importJSON(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
@@ -1754,10 +1679,10 @@
             saveDataToStorage();
             renderAll();
           } else {
-            alert("Niepoprawny format pliku kopii zapasowej.");
+            alert("Niepoprawny format pliku.");
           }
         } catch (err) {
-          alert("Błąd odczytu pliku JSON: " + err.message);
+          alert("Błąd odczytu pliku: " + err.message);
         }
       };
       reader.readAsText(file);
@@ -1765,19 +1690,14 @@
 
     function toggleModal(modalId, show) {
       const modal = document.getElementById(modalId);
-      if (show) {
-        modal.classList.remove('hidden');
-      } else {
-        modal.classList.add('hidden');
-      }
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
     }
 
     function formatDatePl(dateString) {
       if (!dateString) return '';
       const parts = dateString.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}.${parts[1]}.${parts[0]}`;
-      }
+      if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
       return dateString;
     }
 

@@ -179,7 +179,9 @@
               <span id="activeVehiclePlate" class="px-2.5 py-0.5 text-xs font-mono font-semibold bg-slate-800 text-amber-400 border border-amber-500/30 rounded-md">---</span>
               <span id="activeVehicleEngine" class="text-xs text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">---</span>
             </div>
-            <p id="activeVehicleSub" class="text-xs text-slate-400 mt-1">Rok prod.: --- | Paliwo: --- | VIN: <span id="activeVehicleVin" class="text-slate-300 font-mono">Brak</span></p>
+            <p class="text-xs text-slate-400 mt-1">
+              <span id="activeVehicleSub">Rok prod.: --- | Paliwo: ---</span> | VIN: <span id="activeVehicleVin" class="text-slate-300 font-mono">Brak</span>
+            </p>
           </div>
         </div>
 
@@ -341,14 +343,14 @@
 
             <!-- KATEGORIE -->
             <div class="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1 scrollbar-none" id="categoryPills">
-              <button onclick="setCategoryFilter('ALL')" class="pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400">Wszystkie</button>
-              <button onclick="setCategoryFilter('Wymiana oleju')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-amber-400 border border-slate-700 hover:border-slate-500">🛢️ Wymiana oleju</button>
-              <button onclick="setCategoryFilter('Silnik')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Silnik</button>
-              <button onclick="setCategoryFilter('Hamulce')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Hamulce</button>
-              <button onclick="setCategoryFilter('Zawieszenie')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Zawieszenie</button>
-              <button onclick="setCategoryFilter('Elektryka')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Elektryka</button>
-              <button onclick="setCategoryFilter('Opony')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Opony</button>
-              <button onclick="setCategoryFilter('Inne')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Inne</button>
+              <button onclick="setCategoryFilter('ALL')" data-cat="ALL" class="pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400">Wszystkie</button>
+              <button onclick="setCategoryFilter('Wymiana oleju')" data-cat="Wymiana oleju" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-amber-400 border border-slate-700 hover:border-slate-500">🛢️ Wymiana oleju</button>
+              <button onclick="setCategoryFilter('Silnik')" data-cat="Silnik" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Silnik</button>
+              <button onclick="setCategoryFilter('Hamulce')" data-cat="Hamulce" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Hamulce</button>
+              <button onclick="setCategoryFilter('Zawieszenie')" data-cat="Zawieszenie" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Zawieszenie</button>
+              <button onclick="setCategoryFilter('Elektryka')" data-cat="Elektryka" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Elektryka</button>
+              <button onclick="setCategoryFilter('Opony')" data-cat="Opony" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Opony</button>
+              <button onclick="setCategoryFilter('Inne')" data-cat="Inne" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Inne</button>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-xs">
@@ -490,13 +492,17 @@
       <button onclick="toggleModal('addVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       <h3 class="text-lg font-bold text-white">Dodaj Nowy Pojazd</h3>
       <form onsubmit="handleAddVehicle(event)" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Nazwa *</label><input type="text" id="newVehicleName" required class="glass-input w-full px-3 py-2 rounded-xl"></div>
+        <div><label class="block text-slate-300 mb-1">Nazwa *</label><input type="text" id="newVehicleName" required placeholder="np. Renault Laguna III" class="glass-input w-full px-3 py-2 rounded-xl"></div>
         <div class="grid grid-cols-2 gap-3">
           <div><label class="block text-slate-300 mb-1">Rejestracja</label><input type="text" id="newVehiclePlate" class="glass-input w-full px-3 py-2 rounded-xl uppercase"></div>
           <div><label class="block text-slate-300 mb-1">Rok</label><input type="number" id="newVehicleYear" class="glass-input w-full px-3 py-2 rounded-xl"></div>
         </div>
-        <div><label class="block text-slate-300 mb-1">VIN</label><input type="text" id="newVehicleVin" class="glass-input w-full px-3 py-2 rounded-xl uppercase"></div>
-        <button type="submit" class="w-full py-2 bg-cyan-500 text-slate-950 font-bold rounded-xl">Zapisz Pojazd</button>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-slate-300 mb-1">Silnik</label><input type="text" id="newVehicleEngine" placeholder="np. 2.0 T" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+          <div><label class="block text-slate-300 mb-1">Paliwo</label><input type="text" id="newVehicleFuel" placeholder="np. LPG / Benzyna" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+        </div>
+        <div><label class="block text-slate-300 mb-1">VIN</label><input type="text" id="newVehicleVin" class="glass-input w-full px-3 py-2 rounded-xl uppercase font-mono"></div>
+        <button type="submit" class="w-full py-2.5 bg-cyan-500 text-slate-950 font-bold rounded-xl">Zapisz Pojazd</button>
       </form>
     </div>
   </div>
@@ -580,8 +586,8 @@
 
   <!-- SCRIPT SUPABASE -->
   <script>
-    const SUPABASE_URL = 'https://acvuqvuicsfobekpegad.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjdnVxdnVpY3Nmb2Jla3BlZ2FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMTA5NjgsImV4cCI6MjEwODg4Njk2OH0.NzAipGeCfA8DQC80vRs-e-9z8qSjmRO0iGd1Ykl2TfY';
+    const SUPABASE_URL = 'https://kopwsxkfscnhaoocdxzk.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHdzeGtmc2NuaGFvb2NkeHprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMTE4MTYsImV4cCI6MjEwODg4NzgxNn0.Vb01SXWqE0pqPpUV0rExs834M580_imz4Y5d-alCEN4';
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -625,22 +631,22 @@
             engine: '2.0 T',
             fuel: 'LPG / Benzyna',
             mileage: 215000,
-            vin: 'VF1**************',
-            next_inspection: '2027-05-15',
-            oc_expiration: '2027-03-20'
+            vin: '',
+            next_inspection: null,
+            oc_expiration: null
           };
           await supabaseClient.from('vehicles').insert([defaultVeh]);
           appData.vehicles = [defaultVeh];
         }
 
-        if (!appData.activeVehicleId || !appData.vehicles.some(v => v.id === appData.activeVehicleId)) {
-          appData.activeVehicleId = appData.vehicles[0].id;
+        if (!appData.activeVehicleId || !appData.vehicles.some(v => String(v.id) === String(appData.activeVehicleId))) {
+          appData.activeVehicleId = String(appData.vehicles[0].id);
         }
 
         renderAll();
       } catch (err) {
         console.error("Błąd ładowania z Supabase:", err);
-        alert("Błąd połączenia z bazą danych Supabase.");
+        alert("Błąd połączenia z bazą danych Supabase: " + err.message);
       }
     }
 
@@ -660,30 +666,31 @@
       select.innerHTML = '';
       appData.vehicles.forEach(v => {
         const opt = document.createElement('option');
-        opt.value = v.id;
+        opt.value = String(v.id);
         opt.textContent = `${v.name} (${v.plate || 'Brak'})`;
-        if (v.id === appData.activeVehicleId) opt.selected = true;
+        if (String(v.id) === String(appData.activeVehicleId)) opt.selected = true;
         select.appendChild(opt);
       });
     }
 
     function switchVehicle(vehId) {
-      appData.activeVehicleId = vehId;
+      appData.activeVehicleId = String(vehId);
+      setCategoryFilter('ALL');
       renderAll();
     }
 
     function getActiveVehicle() {
-      return appData.vehicles.find(v => v.id === appData.activeVehicleId) || appData.vehicles[0];
+      return appData.vehicles.find(v => String(v.id) === String(appData.activeVehicleId)) || appData.vehicles[0];
     }
 
     function renderActiveVehicleDetails() {
       const v = getActiveVehicle();
       if (!v) return;
-      document.getElementById('activeVehicleName').textContent = v.name;
+      document.getElementById('activeVehicleName').textContent = v.name || 'Pojazd';
       document.getElementById('activeVehiclePlate').textContent = v.plate || '---';
       document.getElementById('activeVehicleEngine').textContent = v.engine || '---';
+      document.getElementById('activeVehicleSub').textContent = `Rok prod.: ${v.year || 'b.d.'} | Paliwo: ${v.fuel || 'b.d.'}`;
       document.getElementById('activeVehicleVin').textContent = v.vin || 'Brak';
-      document.getElementById('activeVehicleSub').textContent = `Rok: ${v.year || 'b.d.'} | Paliwo: ${v.fuel || 'b.d.'}`;
     }
 
     function renderDocumentDates() {
@@ -719,8 +726,8 @@
         engine: document.getElementById('editVehicleEngine').value.trim(),
         fuel: document.getElementById('editVehicleFuel').value.trim(),
         vin: document.getElementById('editVehicleVin').value.trim().toUpperCase(),
-        next_inspection: document.getElementById('editVehicleInspection').value,
-        oc_expiration: document.getElementById('editVehicleOc').value
+        next_inspection: document.getElementById('editVehicleInspection').value || null,
+        oc_expiration: document.getElementById('editVehicleOc').value || null
       };
 
       const { error } = await supabaseClient.from('vehicles').update(updated).eq('id', v.id);
@@ -735,19 +742,19 @@
     }
 
     function getActiveEntries() {
-      return appData.entries.filter(e => e.vehicle_id === appData.activeVehicleId);
+      return appData.entries.filter(e => String(e.vehicle_id) === String(appData.activeVehicleId));
     }
 
     function renderStats() {
       const v = getActiveVehicle();
       const entries = getActiveEntries();
-      const mileage = v ? v.mileage : 0;
-      document.getElementById('statMileage').textContent = `${mileage.toLocaleString()} km`;
+      const mileage = v ? (v.mileage || 0) : 0;
+      document.getElementById('statMileage').textContent = `${mileage.toLocaleString('pl-PL')} km`;
 
       const totalCost = entries.filter(e => e.include_in_sum !== false).reduce((sum, e) => sum + (parseFloat(e.cost) || 0), 0);
-      document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString()} PLN`;
+      document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString('pl-PL')} PLN`;
       document.getElementById('statServicesCount').textContent = entries.length;
-      document.getElementById('statAvgCost').textContent = `Średnio: ${entries.length > 0 ? (totalCost / entries.length).toFixed(0) : 0} PLN`;
+      document.getElementById('statAvgCost').textContent = `Średnio: ${entries.length > 0 ? (totalCost / entries.length).toFixed(0) : 0} PLN / wpis`;
     }
 
     function renderOilCountdown() {
@@ -760,24 +767,25 @@
 
       if (oilEntries.length === 0) {
         oilKmEl.textContent = "Brak wpisów o oleju";
+        oilKmEl.className = "text-xl font-black text-white mt-1";
         oilSubEl.textContent = "Dodaj wymianę oleju w formularzu";
         return;
       }
 
       const lastOil = oilEntries[0];
-      const intervalKm = 10000; // standardowy interwał wymiany oleju
+      const intervalKm = 10000;
       const currentMileage = v ? (v.mileage || 0) : 0;
       const kmSinceOil = currentMileage - (lastOil.mileage || 0);
       const kmRemaining = intervalKm - kmSinceOil;
 
       if (kmRemaining > 0) {
-        oilKmEl.textContent = `Zostało ~${kmRemaining.toLocaleString()} km`;
+        oilKmEl.textContent = `Zostało ~${kmRemaining.toLocaleString('pl-PL')} km`;
         oilKmEl.className = "text-xl font-black text-emerald-400 mt-1";
       } else {
-        oilKmEl.textContent = `Przekroczono o ${Math.abs(kmRemaining).toLocaleString()} km!`;
+        oilKmEl.textContent = `Przekroczono o ${Math.abs(kmRemaining).toLocaleString('pl-PL')} km!`;
         oilKmEl.className = "text-xl font-black text-rose-500 mt-1";
       }
-      oilSubEl.textContent = `Ostatnia: ${lastOil.date} przy ${lastOil.mileage.toLocaleString()} km`;
+      oilSubEl.textContent = `Ostatnia: ${lastOil.date} przy ${(lastOil.mileage || 0).toLocaleString('pl-PL')} km`;
     }
 
     function renderExpenseAnalytics() {
@@ -837,7 +845,7 @@
 
       const newEntry = {
         id: 'ent_' + Date.now(),
-        vehicle_id: appData.activeVehicleId,
+        vehicle_id: activeVeh.id,
         name: document.getElementById('partName').value.trim(),
         cost: parseFloat(document.getElementById('partCost').value) || 0,
         mileage: newMileage,
@@ -866,7 +874,7 @@
     }
 
     function openEditEntryModal(id) {
-      const entry = appData.entries.find(e => e.id === id);
+      const entry = appData.entries.find(e => String(e.id) === String(id));
       if (!entry) return;
 
       document.getElementById('editEntryId').value = entry.id;
@@ -884,7 +892,7 @@
     async function handleEditEntrySubmit(e) {
       e.preventDefault();
       const id = document.getElementById('editEntryId').value;
-      const entry = appData.entries.find(item => item.id === id);
+      const entry = appData.entries.find(item => String(item.id) === String(id));
       if (!entry) return;
 
       const updatedData = {
@@ -897,7 +905,7 @@
         include_in_sum: document.getElementById('editPartIncludeInSum').checked
       };
 
-      const { error } = await supabaseClient.from('service_entries').update(updatedData).eq('id', id);
+      const { error } = await supabaseClient.from('service_entries').update(updatedData).eq('id', entry.id);
       if (error) {
         alert("Błąd aktualizacji w Supabase: " + error.message);
         return;
@@ -911,17 +919,19 @@
     async function deleteEntry(id) {
       if (!confirm("Usunąć wpis z bazy?")) return;
       await supabaseClient.from('service_entries').delete().eq('id', id);
-      appData.entries = appData.entries.filter(e => e.id !== id);
+      appData.entries = appData.entries.filter(e => String(e.id) !== String(id));
       renderAll();
     }
 
     function setCategoryFilter(category) {
       activeCategoryFilter = category;
       document.querySelectorAll('#categoryPills button').forEach(btn => {
-        if (btn.textContent.includes(category) || (category === 'ALL' && btn.textContent === 'Wszystkie')) {
+        const btnCat = btn.getAttribute('data-cat');
+        if (btnCat === category) {
           btn.className = "pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400";
         } else {
-          btn.className = "pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500";
+          const textColor = btnCat === 'Wymiana oleju' ? 'text-amber-400' : 'text-slate-300';
+          btn.className = `pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 ${textColor} border border-slate-700 hover:border-slate-500`;
         }
       });
       renderHistory();
@@ -953,10 +963,10 @@
 
       if (searchQuery !== '') {
         filtered = filtered.filter(e => 
-          e.name.toLowerCase().includes(searchQuery) || 
+          (e.name || '').toLowerCase().includes(searchQuery) || 
           (e.notes && e.notes.toLowerCase().includes(searchQuery)) ||
-          e.cost.toString().includes(searchQuery) ||
-          e.mileage.toString().includes(searchQuery)
+          String(e.cost).includes(searchQuery) ||
+          String(e.mileage).includes(searchQuery)
         );
       }
 
@@ -1040,7 +1050,11 @@
         notes: ''
       };
 
-      await supabaseClient.from('budget_items').insert([item]);
+      const { error } = await supabaseClient.from('budget_items').insert([item]);
+      if (error) {
+        alert("Błąd zapisu budżetu: " + error.message);
+        return;
+      }
       appData.budgetItems.unshift(item);
       document.getElementById('budgetForm').reset();
       document.getElementById('budgetDueDate').value = new Date().toISOString().split('T')[0];
@@ -1048,16 +1062,16 @@
     }
 
     async function toggleBudgetPaid(id) {
-      const item = appData.budgetItems.find(b => b.id === id);
+      const item = appData.budgetItems.find(b => String(b.id) === String(id));
       if (!item) return;
       item.is_paid = !item.is_paid;
-      await supabaseClient.from('budget_items').update({ is_paid: item.is_paid }).eq('id', id);
+      await supabaseClient.from('budget_items').update({ is_paid: item.is_paid }).eq('id', item.id);
       renderBudget();
     }
 
     async function deleteBudgetItem(id) {
       await supabaseClient.from('budget_items').delete().eq('id', id);
-      appData.budgetItems = appData.budgetItems.filter(b => b.id !== id);
+      appData.budgetItems = appData.budgetItems.filter(b => String(b.id) !== String(id));
       renderBudget();
     }
 
@@ -1123,16 +1137,19 @@
     }
 
     function switchModule(mod) {
+      const garazControls = document.getElementById('garazControls');
       if (mod === 'garaz') {
         document.getElementById('moduleGaraz').classList.remove('hidden');
         document.getElementById('moduleBudzet').classList.add('hidden');
-        document.getElementById('navGaraz').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 shadow-md";
-        document.getElementById('navBudzet').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+        if (garazControls) garazControls.classList.remove('hidden');
+        document.getElementById('navGaraz').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 shadow-md transition";
+        document.getElementById('navBudzet').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
       } else {
         document.getElementById('moduleGaraz').classList.add('hidden');
         document.getElementById('moduleBudzet').classList.remove('hidden');
-        document.getElementById('navBudzet').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950 shadow-md";
-        document.getElementById('navGaraz').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white";
+        if (garazControls) garazControls.classList.add('hidden');
+        document.getElementById('navBudzet').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950 shadow-md transition";
+        document.getElementById('navGaraz').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
         renderBudget();
       }
     }
@@ -1160,13 +1177,22 @@
         name: document.getElementById('newVehicleName').value.trim(),
         plate: document.getElementById('newVehiclePlate').value.trim().toUpperCase(),
         year: document.getElementById('newVehicleYear').value.trim(),
+        engine: document.getElementById('newVehicleEngine').value.trim(),
+        fuel: document.getElementById('newVehicleFuel').value.trim(),
         vin: document.getElementById('newVehicleVin').value.trim().toUpperCase(),
-        mileage: 0
+        mileage: 0,
+        next_inspection: null,
+        oc_expiration: null
       };
 
-      await supabaseClient.from('vehicles').insert([newVeh]);
+      const { error } = await supabaseClient.from('vehicles').insert([newVeh]);
+      if (error) {
+        alert("Błąd dodawania pojazdu: " + error.message);
+        return;
+      }
       appData.vehicles.push(newVeh);
-      appData.activeVehicleId = newVeh.id;
+      appData.activeVehicleId = String(newVeh.id);
+      e.target.reset();
       toggleModal('addVehicleModal', false);
       renderAll();
     }
@@ -1174,7 +1200,7 @@
     async function promptUpdateMileage() {
       const v = getActiveVehicle();
       const val = prompt("Podaj nowy przebieg (km):", v.mileage || 0);
-      if (val !== null && !isNaN(val)) {
+      if (val !== null && !isNaN(val) && val.trim() !== '') {
         v.mileage = parseInt(val, 10);
         await supabaseClient.from('vehicles').update({ mileage: v.mileage }).eq('id', v.id);
         renderAll();
@@ -1189,8 +1215,9 @@
       const v = getActiveVehicle();
       if (confirm(`Usunąć pojazd "${v.name}"?`)) {
         await supabaseClient.from('vehicles').delete().eq('id', v.id);
-        appData.vehicles = appData.vehicles.filter(item => item.id !== v.id);
-        appData.activeVehicleId = appData.vehicles[0].id;
+        appData.vehicles = appData.vehicles.filter(item => String(item.id) !== String(v.id));
+        appData.entries = appData.entries.filter(item => String(item.vehicle_id) !== String(v.id));
+        appData.activeVehicleId = String(appData.vehicles[0].id);
         renderAll();
       }
     }

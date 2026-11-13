@@ -167,6 +167,7 @@
     <!-- ==================== MODUŁ GARAŻ ==================== -->
     <div id="moduleGaraz" class="space-y-6">
 
+      <!-- BANER POJAZDU -->
       <div id="vehicleBanner" class="glass-panel p-5 rounded-2xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
         <div class="flex items-center space-x-4">
           <div id="vehicleAvatar" class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-500 text-2xl font-bold shadow-inner shrink-0">
@@ -178,12 +179,15 @@
               <span id="activeVehiclePlate" class="px-2.5 py-0.5 text-xs font-mono font-semibold bg-slate-800 text-amber-400 border border-amber-500/30 rounded-md">---</span>
               <span id="activeVehicleEngine" class="text-xs text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">---</span>
             </div>
-            <p id="activeVehicleSub" class="text-xs text-slate-400 mt-1">Rok prod.: --- | Paliwo: ---</p>
+            <p id="activeVehicleSub" class="text-xs text-slate-400 mt-1">Rok prod.: --- | Paliwo: --- | VIN: <span id="activeVehicleVin" class="text-slate-300 font-mono">Brak</span></p>
           </div>
         </div>
 
         <div class="flex items-center space-x-2 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-800 flex-wrap gap-y-2">
-          <button onclick="promptUpdateMileage()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-cyan-400 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+          <button onclick="openEditVehicleModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-cyan-400 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-pen-to-square"></i> Edytuj Pojazd
+          </button>
+          <button onclick="promptUpdateMileage()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-amber-400 font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
             <i class="fa-solid fa-gauge"></i> Aktualizuj Przebieg
           </button>
           <button onclick="deleteCurrentVehicle()" class="px-2.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-xs text-red-400 font-medium rounded-lg border border-red-500/20 transition" title="Usuń pojazd">
@@ -192,8 +196,37 @@
         </div>
       </div>
 
+      <!-- KAFELKI DOKUMENTÓW (PRZEGLĄD & OC) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass-panel p-4 rounded-2xl border flex items-center justify-between">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg shrink-0">
+              <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Przegląd Techniczny</p>
+              <h4 id="inspectionDateText" class="text-base font-bold text-white mt-0.5">Brak daty</h4>
+            </div>
+          </div>
+          <button onclick="openEditVehicleModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-lg border border-slate-700">Edytuj</button>
+        </div>
+
+        <div class="glass-panel p-4 rounded-2xl border flex items-center justify-between">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg shrink-0">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Ubezpieczenie OC</p>
+              <h4 id="ocDateText" class="text-base font-bold text-white mt-0.5">Brak daty</h4>
+            </div>
+          </div>
+          <button onclick="openEditVehicleModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-lg border border-slate-700">Edytuj</button>
+        </div>
+      </div>
+
       <!-- STATS -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Przebieg Główny</p>
           <h3 id="statMileage" class="text-2xl font-black text-white mt-1">0 km</h3>
@@ -212,10 +245,13 @@
           <p id="statAvgCost" class="text-[11px] text-slate-400 mt-1">Średnio: 0 PLN / wpis</p>
         </div>
 
-        <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ostatnia Wymiana</p>
-          <h3 id="statLastDate" class="text-lg font-bold text-white mt-1.5 truncate">Brak wpisów</h3>
-          <p id="statLastPart" class="text-[11px] text-slate-400 mt-0.5 truncate">-</p>
+        <!-- SPECJALNY KAFELEK ODLICZANIA OLEJU -->
+        <div class="glass-panel p-4 rounded-2xl border relative overflow-hidden group border-amber-500/30 bg-amber-500/5">
+          <p class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-oil-can"></i> Wymiana Oleju (Interwał)
+          </p>
+          <h3 id="oilCountdownKm" class="text-xl font-black text-white mt-1">Brak danych</h3>
+          <p id="oilCountdownSub" class="text-[11px] text-slate-300 mt-1">Ostatnia wymiana: ---</p>
         </div>
       </div>
 
@@ -233,7 +269,7 @@
             <form id="serviceForm" onsubmit="handleFormSubmit(event)" class="space-y-4 pt-4 transition-all duration-300">
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Nazwa części / Naprawy *</label>
-                <input type="text" id="partName" required placeholder="np. Wymiana oleju" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
+                <input type="text" id="partName" required placeholder="np. Wymiana oleju 5W40" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
               </div>
 
               <div class="grid grid-cols-2 gap-3">
@@ -255,7 +291,8 @@
                 <div>
                   <label class="block text-xs font-semibold text-slate-300 mb-1">Kategoria</label>
                   <select id="partCategory" class="glass-input w-full px-3 py-2 text-sm rounded-xl">
-                    <option value="Silnik">Silnik / Oleje</option>
+                    <option value="Wymiana oleju">🛢️ Wymiana oleju (Specjalna)</option>
+                    <option value="Silnik">Silnik / Podzespoły</option>
                     <option value="Hamulce">Układ Hamulcowy</option>
                     <option value="Zawieszenie">Zawieszenie / Kier.</option>
                     <option value="Elektryka">Elektryka / Klimatyzacja</option>
@@ -267,7 +304,7 @@
 
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Uwagi</label>
-                <textarea id="partNotes" rows="2" placeholder="np. Filtr Mann" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
+                <textarea id="partNotes" rows="2" placeholder="np. Olej Motul + Filtr Mann" class="glass-input w-full px-3 py-2 text-sm rounded-xl resize-none"></textarea>
               </div>
 
               <div class="flex items-center space-x-2 pt-1">
@@ -305,6 +342,7 @@
             <!-- KATEGORIE -->
             <div class="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1 scrollbar-none" id="categoryPills">
               <button onclick="setCategoryFilter('ALL')" class="pill-btn active px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-cyan-500 text-slate-950 border border-cyan-400">Wszystkie</button>
+              <button onclick="setCategoryFilter('Wymiana oleju')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-amber-400 border border-slate-700 hover:border-slate-500">🛢️ Wymiana oleju</button>
               <button onclick="setCategoryFilter('Silnik')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Silnik</button>
               <button onclick="setCategoryFilter('Hamulce')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Hamulce</button>
               <button onclick="setCategoryFilter('Zawieszenie')" class="pill-btn px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500">Zawieszenie</button>
@@ -446,7 +484,7 @@
     </div>
   </main>
 
-  <!-- MODALS -->
+  <!-- MODAL: DODAJ POJAZD -->
   <div id="addVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
     <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
       <button onclick="toggleModal('addVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -457,12 +495,38 @@
           <div><label class="block text-slate-300 mb-1">Rejestracja</label><input type="text" id="newVehiclePlate" class="glass-input w-full px-3 py-2 rounded-xl uppercase"></div>
           <div><label class="block text-slate-300 mb-1">Rok</label><input type="number" id="newVehicleYear" class="glass-input w-full px-3 py-2 rounded-xl"></div>
         </div>
+        <div><label class="block text-slate-300 mb-1">VIN</label><input type="text" id="newVehicleVin" class="glass-input w-full px-3 py-2 rounded-xl uppercase"></div>
         <button type="submit" class="w-full py-2 bg-cyan-500 text-slate-950 font-bold rounded-xl">Zapisz Pojazd</button>
       </form>
     </div>
   </div>
 
-  <!-- EDIT ENTRY MODAL -->
+  <!-- MODAL: EDYTUJ POJAZD (VIN, OC, PRZEGLĄD) -->
+  <div id="editVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
+      <button onclick="toggleModal('editVehicleModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      <h3 class="text-lg font-bold text-white">Edytuj Dane Pojazdu</h3>
+      <form onsubmit="handleEditVehicleSubmit(event)" class="space-y-3 text-xs">
+        <div><label class="block text-slate-300 mb-1">Nazwa *</label><input type="text" id="editVehicleName" required class="glass-input w-full px-3 py-2 rounded-xl"></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-slate-300 mb-1">Rejestracja</label><input type="text" id="editVehiclePlate" class="glass-input w-full px-3 py-2 rounded-xl uppercase"></div>
+          <div><label class="block text-slate-300 mb-1">Rok produkcji</label><input type="number" id="editVehicleYear" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-slate-300 mb-1">Silnik / Pojemność</label><input type="text" id="editVehicleEngine" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+          <div><label class="block text-slate-300 mb-1">Paliwo</label><input type="text" id="editVehicleFuel" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+        </div>
+        <div><label class="block text-slate-300 mb-1">Numer VIN</label><input type="text" id="editVehicleVin" class="glass-input w-full px-3 py-2 rounded-xl uppercase font-mono"></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-slate-300 mb-1">Przegląd ważny do</label><input type="date" id="editVehicleInspection" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+          <div><label class="block text-slate-300 mb-1">Ubezpieczenie OC do</label><input type="date" id="editVehicleOc" class="glass-input w-full px-3 py-2 rounded-xl"></div>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-cyan-500 text-slate-950 font-bold rounded-xl transition shadow-lg">Zapisz Zmiany</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDYTUJ WPIS SERWISOWY -->
   <div id="editEntryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
     <div class="glass-panel bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 relative shadow-2xl space-y-4">
       <button onclick="toggleModal('editEntryModal', false)" class="absolute right-4 top-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -491,7 +555,8 @@
           <div>
             <label class="block text-slate-300 mb-1">Kategoria</label>
             <select id="editPartCategory" class="glass-input w-full px-3 py-2 rounded-xl">
-              <option value="Silnik">Silnik / Oleje</option>
+              <option value="Wymiana oleju">🛢️ Wymiana oleju</option>
+              <option value="Silnik">Silnik / Podzespoły</option>
               <option value="Hamulce">Układ Hamulcowy</option>
               <option value="Zawieszenie">Zawieszenie / Kier.</option>
               <option value="Elektryka">Elektryka / Klimatyzacja</option>
@@ -559,7 +624,10 @@
             year: '2011',
             engine: '2.0 T',
             fuel: 'LPG / Benzyna',
-            mileage: 215000
+            mileage: 215000,
+            vin: 'VF1**************',
+            next_inspection: '2027-05-15',
+            oc_expiration: '2027-03-20'
           };
           await supabaseClient.from('vehicles').insert([defaultVeh]);
           appData.vehicles = [defaultVeh];
@@ -581,6 +649,7 @@
       renderActiveVehicleDetails();
       renderDocumentDates();
       renderStats();
+      renderOilCountdown();
       renderExpenseAnalytics();
       renderHistory();
       renderBudget();
@@ -613,16 +682,56 @@
       document.getElementById('activeVehicleName').textContent = v.name;
       document.getElementById('activeVehiclePlate').textContent = v.plate || '---';
       document.getElementById('activeVehicleEngine').textContent = v.engine || '---';
+      document.getElementById('activeVehicleVin').textContent = v.vin || 'Brak';
       document.getElementById('activeVehicleSub').textContent = `Rok: ${v.year || 'b.d.'} | Paliwo: ${v.fuel || 'b.d.'}`;
     }
 
     function renderDocumentDates() {
       const v = getActiveVehicle();
       if (!v) return;
-      const inspEl = document.getElementById('inspectionDateText');
-      const ocEl = document.getElementById('ocDateText');
-      if (inspEl) inspEl.textContent = v.next_inspection || 'Brak daty';
-      if (ocEl) ocEl.textContent = v.oc_expiration || 'Brak daty';
+      document.getElementById('inspectionDateText').textContent = v.next_inspection || 'Brak daty';
+      document.getElementById('ocDateText').textContent = v.oc_expiration || 'Brak daty';
+    }
+
+    function openEditVehicleModal() {
+      const v = getActiveVehicle();
+      if (!v) return;
+      document.getElementById('editVehicleName').value = v.name || '';
+      document.getElementById('editVehiclePlate').value = v.plate || '';
+      document.getElementById('editVehicleYear').value = v.year || '';
+      document.getElementById('editVehicleEngine').value = v.engine || '';
+      document.getElementById('editVehicleFuel').value = v.fuel || '';
+      document.getElementById('editVehicleVin').value = v.vin || '';
+      document.getElementById('editVehicleInspection').value = v.next_inspection || '';
+      document.getElementById('editVehicleOc').value = v.oc_expiration || '';
+      toggleModal('editVehicleModal', true);
+    }
+
+    async function handleEditVehicleSubmit(e) {
+      e.preventDefault();
+      const v = getActiveVehicle();
+      if (!v) return;
+
+      const updated = {
+        name: document.getElementById('editVehicleName').value.trim(),
+        plate: document.getElementById('editVehiclePlate').value.trim().toUpperCase(),
+        year: document.getElementById('editVehicleYear').value.trim(),
+        engine: document.getElementById('editVehicleEngine').value.trim(),
+        fuel: document.getElementById('editVehicleFuel').value.trim(),
+        vin: document.getElementById('editVehicleVin').value.trim().toUpperCase(),
+        next_inspection: document.getElementById('editVehicleInspection').value,
+        oc_expiration: document.getElementById('editVehicleOc').value
+      };
+
+      const { error } = await supabaseClient.from('vehicles').update(updated).eq('id', v.id);
+      if (error) {
+        alert("Błąd aktualizacji pojazdu: " + error.message);
+        return;
+      }
+
+      Object.assign(v, updated);
+      toggleModal('editVehicleModal', false);
+      renderAll();
     }
 
     function getActiveEntries() {
@@ -639,15 +748,36 @@
       document.getElementById('statTotalCost').textContent = `${totalCost.toLocaleString()} PLN`;
       document.getElementById('statServicesCount').textContent = entries.length;
       document.getElementById('statAvgCost').textContent = `Średnio: ${entries.length > 0 ? (totalCost / entries.length).toFixed(0) : 0} PLN`;
+    }
 
-      if (entries.length > 0) {
-        const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
-        document.getElementById('statLastDate').textContent = sorted[0].date;
-        document.getElementById('statLastPart').textContent = sorted[0].name;
-      } else {
-        document.getElementById('statLastDate').textContent = "Brak wpisów";
-        document.getElementById('statLastPart').textContent = "-";
+    function renderOilCountdown() {
+      const v = getActiveVehicle();
+      const entries = getActiveEntries();
+      const oilKmEl = document.getElementById('oilCountdownKm');
+      const oilSubEl = document.getElementById('oilCountdownSub');
+
+      const oilEntries = entries.filter(e => e.category === 'Wymiana oleju').sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (oilEntries.length === 0) {
+        oilKmEl.textContent = "Brak wpisów o oleju";
+        oilSubEl.textContent = "Dodaj wymianę oleju w formularzu";
+        return;
       }
+
+      const lastOil = oilEntries[0];
+      const intervalKm = 10000; // standardowy interwał wymiany oleju
+      const currentMileage = v ? (v.mileage || 0) : 0;
+      const kmSinceOil = currentMileage - (lastOil.mileage || 0);
+      const kmRemaining = intervalKm - kmSinceOil;
+
+      if (kmRemaining > 0) {
+        oilKmEl.textContent = `Zostało ~${kmRemaining.toLocaleString()} km`;
+        oilKmEl.className = "text-xl font-black text-emerald-400 mt-1";
+      } else {
+        oilKmEl.textContent = `Przekroczono o ${Math.abs(kmRemaining).toLocaleString()} km!`;
+        oilKmEl.className = "text-xl font-black text-rose-500 mt-1";
+      }
+      oilSubEl.textContent = `Ostatnia: ${lastOil.date} przy ${lastOil.mileage.toLocaleString()} km`;
     }
 
     function renderExpenseAnalytics() {
@@ -670,7 +800,8 @@
       });
 
       const categoriesConfig = {
-        'Silnik': { color: 'bg-amber-500', icon: 'fa-oil-can' },
+        'Wymiana oleju': { color: 'bg-amber-400', icon: 'fa-oil-can' },
+        'Silnik': { color: 'bg-amber-500', icon: 'fa-gear' },
         'Hamulce': { color: 'bg-red-500', icon: 'fa-ban' },
         'Zawieszenie': { color: 'bg-cyan-500', icon: 'fa-car-burst' },
         'Elektryka': { color: 'bg-purple-500', icon: 'fa-bolt' },
@@ -852,7 +983,8 @@
       container.innerHTML = '';
 
       const categoryIcons = {
-        'Silnik': 'fa-oil-can text-amber-400 bg-amber-500/10 border-amber-500/20',
+        'Wymiana oleju': 'fa-oil-can text-amber-400 bg-amber-500/10 border-amber-500/20',
+        'Silnik': 'fa-gear text-amber-500 bg-amber-500/10 border-amber-500/20',
         'Hamulce': 'fa-ban text-red-400 bg-red-500/10 border-red-500/20',
         'Zawieszenie': 'fa-car-burst text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
         'Elektryka': 'fa-bolt text-purple-400 bg-purple-500/10 border-purple-500/20',
@@ -1028,6 +1160,7 @@
         name: document.getElementById('newVehicleName').value.trim(),
         plate: document.getElementById('newVehiclePlate').value.trim().toUpperCase(),
         year: document.getElementById('newVehicleYear').value.trim(),
+        vin: document.getElementById('newVehicleVin').value.trim().toUpperCase(),
         mileage: 0
       };
 
